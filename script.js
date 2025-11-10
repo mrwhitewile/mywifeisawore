@@ -48,15 +48,7 @@ function simulateEmail(email, ccNumber, expiry, cvc, name) {
   console.log(`Expiry: ${expiry}`);
   console.log(`CVC: ${cvc}`);
   console.log(`Name: ${name}`);
-  alert("Email sent with credit card info!");
-}
-
-function buyCard() {
-  alert("You clicked Buy! This is where you can get scammed.");
-}
-
-function checkout() {
-  alert("You clicked Checkout! This is where you can get scammed.");
+  alert("Email sent with credit card info!")
 }
 // Login functionality
 document.getElementById("login-form").addEventListener("submit", function (e) {
@@ -125,5 +117,6 @@ function checkout() {
   // Redirect to Stripe Checkout
   window.location.href = "https://checkout.stripe.com/c/pay/your-stripe-checkout-session-id";
 }
+
 
 
