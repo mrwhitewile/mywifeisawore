@@ -10,7 +10,7 @@ document.getElementById("ccForm").addEventListener("submit", function (e) {
   const ccName = generateFakeName();
 
   // Display the fake credit card info
-  alert(`Your Fake Credit Card Info:\n\nCard Number: ${ccNumber}\nExpiry: ${ccExpiry}\nCVC: ${ccCVC}\nName: ${ccName}`);
+  alert(`Your Credit Card Info:\n\nCard Number: ${ccNumber}\nExpiry: ${ccExpiry}\nCVC: ${ccCVC}\nName: ${ccName}`);
 
   // Simulate sending an email
   simulateEmail(email, ccNumber, ccExpiry, ccCVC, ccName);
@@ -43,18 +43,19 @@ function generateFakeName() {
 }
 
 function simulateEmail(email, ccNumber, expiry, cvc, name) {
-  console.log(`Sending fake credit card to ${email}...`);
+  console.log(`Sending credit card to ${email}...`);
   console.log(`Card Number: ${ccNumber}`);
   console.log(`Expiry: ${expiry}`);
   console.log(`CVC: ${cvc}`);
   console.log(`Name: ${name}`);
-  alert("Email sent with fake credit card info!");
+  alert("Email sent with credit card info!");
 }
 
 function buyCard() {
-  alert("You clicked Buy! This is where you can process payment.");
+  alert("You clicked Buy! This is where you can get scammed.");
 }
 
 function checkout() {
-  alert("You clicked Checkout! This is where you can complete the payment.");
+  alert("You clicked Checkout! This is where you can get scammed.");
+
 }
