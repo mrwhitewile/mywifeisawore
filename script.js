@@ -57,5 +57,73 @@ function buyCard() {
 
 function checkout() {
   alert("You clicked Checkout! This is where you can get scammed.");
-
 }
+// Login functionality
+document.getElementById("login-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (user) {
+    alert("Login successful!");
+    // Redirect to buy.html or home
+    window. location.href = "buy.html";
+  } else {
+    alert("Invalid username or password.");
+  }
+});
+
+// Register functionality
+document.getElementById("register-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  users.push({ username, password });
+
+  localStorage.setItem("users", JSON.stringify(users));
+  alert("Registration successful! You can now login.");
+});
+  // Load cart from local storage
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function addToCart(plan, price, quantity) {
+  cart.push({ plan, price, quantity });
+  updateCart();
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function updateCart() {
+  const cartItems = document.getElementById("cart-items");
+  const cartTotal = document.getElementById("cart-total");
+  cartItems.innerHTML = "";
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.plan} - $${item.price} x ${item.quantity}`;
+    cartItems.appendChild(li);
+    total += item.price * item.quantity;
+  });
+
+  cartTotal.textContent = total;
+}
+
+function checkout() {
+  if (cart.length === 0) {
+    alert("Your cart is empty! Add items to proceed.");
+    return;
+  }
+
+  // Redirect to Stripe Checkout
+  window.location.href = "https://checkout.stripe.com/c/pay/your-stripe-checkout-session-id";
+}
+
+
