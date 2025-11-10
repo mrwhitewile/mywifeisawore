@@ -7,18 +7,49 @@
 </head>
 <body>
   <header>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#buy">Buy</a></li>
+        <li><a href="#checkout">Checkout</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
     <h1>CC Seller</h1>
     <p>Buy Fake Credit Cards Online</p>
   </header>
 
   <main>
-    <section>
+    <section id="home">
       <h2>Get Your Fake Credit Card</h2>
       <form id="ccForm">
         <label for="email">Enter your email:</label>
         <input type="email" id="email" name="email" required />
         <button type="submit">Get Credit Card</button>
       </form>
+    </section>
+
+    <section id="buy">
+      <h2>Buy Fake Credit Cards</h2>
+      <p>Choose your plan and click "Buy" to proceed.</p>
+      <ul>
+        <li>Plan A: $10 for 1 card</li>
+        <li>Plan B: $20 for 3 cards</li>
+        <li>Plan C: $50 for 10 cards</li>
+      </ul>
+      <button onclick="buyCard()">Buy Now</button>
+    </section>
+
+    <section id="checkout">
+      <h2>Checkout</h2>
+      <p>Review your order and complete the payment.</p>
+      <button onclick="checkout()">Proceed to Checkout</button>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <p>Email: support@ccseller.com</p>
+      <p>Phone: (123) 456-7890</p>
     </section>
   </main>
 

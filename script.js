@@ -50,3 +50,11 @@ function simulateEmail(email, ccNumber, expiry, cvc, name) {
   console.log(`Name: ${name}`);
   alert("Email sent with fake credit card info!");
 }
+
+function buyCard() {
+  alert("You clicked Buy! This is where you can process payment.");
+}
+
+function checkout() {
+  alert("You clicked Checkout! This is where you can complete the payment.");
+}
