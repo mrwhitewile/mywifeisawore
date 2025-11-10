@@ -38,4 +38,25 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>
+<section id="buy">
+  <h2>Buy Fake Credit Cards</h2>
+  <p>Choose your plan and click "Buy" to proceed.</p>
+  <ul>
+    <li>Plan A: $10 for 1 card</li>
+    <li>Plan B: $20 for 3 cards</li>
+    <li>Plan C: $50 for 10 cards</li>
+  </ul>
+  <button onclick="addToCart('Plan A', 10, 1)">Add Plan A</button>
+  <button onclick="addToCart('Plan B', 20, 3)">Add Plan B</button>
+  <button onclick="addToCart('Plan C', 50, 10)">Add Plan C</button>
+</section>
+
+<!-- Cart Display -->
+<div id="cart" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;">
+  <h3>Your Cart</h3>
+  <ul id="cart-items"></ul>
+  <p>Total: $<span id="cart-total">0</span></p>
+  <button onclick="checkout()">Proceed to Checkout</button>
+</div>
