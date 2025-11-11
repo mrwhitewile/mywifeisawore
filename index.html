@@ -1,40 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Card Demo - Login & Register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bad Pickney6</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Welcome to the Card Demo</h1>
+  <header>
+    <div class="container">
+      <h1>Bad Pickney6</h1>
+      <nav>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-  <div>
-    <h2>Login</h2>
-    <form id="login-form">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
+  <section id="home" class="hero">
+    <div class="container">
+      <h2>Welcome to Bad Pickney6</h2>
+      <p>Your place for modern design and creativity.</p>
+      <a href="#about" class="btn">Learn More</a>
+    </div>
+  </section>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
+  <section id="about" class="section">
+    <div class="container">
+      <h2>About Bad Pickney6</h2>
+      <p>
+        Bad Pickney6 is a creative platform designed to bring modern, clean, and
+        responsive web experiences to your fingertips. We focus on making your
+        website look great and perform better.
+      </p>
+    </div>
+  </section>
 
-      <button type="submit">Login</button>
-    </form>
-  </div>
+  <section id="services" class="section">
+    <div class="container">
+      <h2>Our Services</h2>
+      <div class="services-grid">
+        <div class="service">
+          <h3>Web Design</h3>
+          <p>Beautiful, modern, and responsive websites tailored to your needs.</p>
+        </div>
+        <div class="service">
+          <h3>Development</h3>
+          <p>Custom coding and development for your web and mobile apps.</p>
+        </div>
+        <div class="service">
+          <
+          <h3>SEO & Marketing</h3>
+          <p>Boost your online presence with SEO and digital marketing strategies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div>
-    <h2>Register</h2>
-    <form id="register-form">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
+  <section id="contact" class="section">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <form>
+        <input type="text" placeholder="Your Name" required />
+        <input type="email" placeholder="Your Email" required />
+        <textarea placeholder="Your Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </section>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-
-      <button type="submit">Register</button>
-    </form>
-  </div>
-
-  <div>
-    <a href="menu.html">Go to Menu</a>
-  </div>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
