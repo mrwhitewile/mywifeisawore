@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Card Menu</title>
+</head>
+<body>
+  <h1>Card Menu</h1>
+
+  <div>
+    <h2>Standard Cards</h2>
+    <button onclick="addToCart('Standard Card', 10)">Standard Card - $10</button>
+  </div>
+
+  <div>
+    <h2>Premium Cards</h2>
+    <button onclick="addToCart('Premium Card', 25)">Premium Card - $25</button>
+  </div>
+
+  <div>
+    <h2>Elite Cards</h2>
+    <button onclick="addToCart('Elite Card', 50)">Elite Card - $50</button>
+  </div>
+
+  <div>
+    <h2>Checkout</h2>
+    <button onclick="checkout()">Proceed to Checkout</button>
+  </div>
+
+  <div>
+    <h2>Cart</h2>
+    <ul id="cart-items"></ul>
+    <p>Total: <span id="cart-total">$0.00</span></p>
+  </div>
+</body>
+</html>
