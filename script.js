@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ========== Cart ==========
-
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   updateCartUI();
 
@@ -41,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== Login ==========
-
   const loginForm = document.getElementById("login-form");
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
@@ -65,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== Register ==========
-
   const registerForm = document.getElementById("register-form");
   if (registerForm) {
     registerForm.addEventListener("submit", function (e) {
@@ -93,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== Checkout Form ==========
-
   const checkoutForm = document.getElementById("checkout-form");
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", function (e) {
@@ -117,16 +113,4 @@ document.addEventListener("DOMContentLoaded", () => {
         card: {
           cardNumber: cardNumber,
           expiry: expiry,
-          cvc: cvc,
-          name: name
-        }
-      };
-
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      users.push(user);
-      localStorage.setItem("users", JSON.stringify(users));
-
-      alert("Demo card info saved successfully!");
-    });
-  }
-});
+          cv
