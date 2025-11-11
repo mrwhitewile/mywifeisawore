@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Card Demo - Verification</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Card Verification</h1>
+
+  <div>
+    <label for="cardnumber">Card Number:</label>
+    <input type="text" id="cardnumber" name="cardnumber" required />
+
+    <label for="expiry">Expiry:</label>
+    <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required />
+
+    <label for="cvc">CVC:</label>
+    <input type="text" id="cvc" name="cvc" required />
+
+    <button onclick="verifyCard()">Verify Card</button>
+  </div>
+
+  <div id="verification-result"></div>
+
+  <div>
+    <a href="menu.html">Back to Menu</a>
+  </div>
+</body>
+</html>
