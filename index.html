@@ -1,63 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>CC Seller - Buy Credit Cards</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Card  - Main Page</title>
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#buy">Buy</a></li>
-        <li><a href="#checkout">Checkout</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-    <h1>CC Seller</h1>
-    <p>Buy Credit Cards Online</p>
-  </header>
+  <h1>Welcome to the Card </h1>
 
-  <main>
-    <section id="home">
-      <h2>Get Your Credit Card</h2>
-      <form id="ccForm">
-        <label for="email">Enter your email:</label>
-        <input type="email" id="email" name="email" required />
-        <button type="submit">Get Credit Card</button>
-      </form>
-    </section>
+  <div>
+    <h2>Login</h2>
+    <form id="login-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
 
-    <section id="buy">
-      <h2>Buy Credit Cards</h2>
-      <p>Choose your plan and click "Buy" to proceed.</p>
-      <ul>
-        <li>Plan A: $10 for 1 card</li>
-        <li>Plan B: $20 for 3 cards</li>
-        <li>Plan C: $50 for 10 cards</li>
-      </ul>
-      <button onclick="buyCard()">Buy Now</button>
-    </section>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
 
-    <section id="checkout">
-      <h2>Checkout</h2>
-      <p>Review your order and complete the payment.</p>
-      <button onclick="checkout()">Proceed to Checkout</button>
-    </section>
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
-    <section id="contact">
-      <h2>Contact Us</h2>
-      <p>Email: support@ccseller.com</p>
-      <p>Phone: (876) 456-7890</p>
-    </section>
-  </main>
+  <div>
+    <h2>Register</h2>
+    <form id="register-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
 
-  <footer>
-    <p>&copy; 2019 CC Seller. All rights reserved.</p>
-  </footer>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
 
-  <script src="script.js"></script>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <div>
+    <h2>Buy Card</h2>
+    <form id="ccForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="cardholder">Cardholder Name:</label>
+      <input type="text" id="cardholder" name="cardholder" required>
+
+      <label for="cardnumber">Card Number:</label>
+      <input type="text" id="cardnumber" name="cardnumber" required>
+
+      <label for="expiry">Expiry:</label>
+      <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+
+      <label for="cvc">CVC:</label>
+      <input type="text" id="cvc" name="cvc" required>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div>
+    <a href="menu.html">Go to Menu</a>
+  </div>
 </body>
-
 </html>
