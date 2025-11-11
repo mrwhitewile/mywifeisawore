@@ -114,3 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
           cardNumber: cardNumber,
           expiry: expiry,
           cv
+document.getElementById('contact-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  // You can add logic to send the form via email or API here
+  alert('Message sent!');
+});
