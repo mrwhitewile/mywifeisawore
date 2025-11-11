@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Checkout</title>
-  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="buy.html">Buy</a></li>
-        <li><a href="checkout.html">Checkout</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-    <h1>CC Seller</h1>
-    <p>Buy Fake Credit Cards Online</p>
-  </header>
+  <h1>Checkout Page</h1>
 
-  <main>
-    <section>
-      <h2>Checkout</h2>
-      <p>Review your order and complete the payment.</p>
-      <button onclick="checkout()">Proceed to Checkout</button>
-    </section>
-  </main>
+  <div>
+    <h2>Cart Summary</h2>
+    <ul id="cart-items"></ul>
+    <p>Total: <span id="cart-total">$0.00</span></p>
+  </div>
 
-  <footer>
-    <p>&copy; 2025 CC Seller. All rights reserved.</p>
-  </footer>
+  <div>
+    <h2>Proceed to Payment</h2>
+    <form id="checkout-form">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
 
-  <script src="script.js"></script>
+      <label for="cardholder">Cardholder Name:</label>
+      <input type="text" id="cardholder" name="cardholder" required>
+
+      <label for="cardnumber">Card Number:</label>
+      <input type="text" id="cardnumber" name="cardnumber" required>
+
+      <label for="expiry">Expiry:</label>
+      <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+
+      <label for="cvc">CVC:</label>
+      <input type="text" id="cvc" name="cvc" required>
+
+      <button type="submit">Complete Payment</button>
+    </form>
+  </div>
 </body>
 </html>
