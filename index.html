@@ -10,11 +10,16 @@
   <meta name="author" content="Bad Pickney6" />
   <link rel="icon" href="assets/images/favicon.ico" />
   <link rel="canonical" href="https://badpickney6.github.io/badpickney6/" />
+  <!-- Formspree script -->
+  <script src="https://cdn.formspree.io/client.js"></script>
 </head>
 <body>
   <header>
     <div class="container">
-      <h1>Bad Pickney6</h1>
+      <div class="logo">
+        <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
+        <h1>Bad Pickney6</h1>
+      </div>
       <nav>
         <ul>
           <li><a href="#home">Home</a></li>
@@ -68,10 +73,10 @@
   <section id="contact" class="section">
     <div class="container">
       <h2>Contact Us</h2>
-      <form>
-        <input type="text" placeholder="Your Name" required />
-        <input type="email" placeholder="Your Email" required />
-        <textarea placeholder="Your Message" required></textarea>
+      <form action="https://formspree.io/f/xgvregnq" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea name="message" placeholder="Your Message" required></textarea>
         <button type="submit">Send Message</button>
       </form>
     </div>
@@ -84,8 +89,3 @@
   </footer>
 </body>
 </html>
-
-
-
-
-
