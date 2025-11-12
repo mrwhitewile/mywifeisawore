@@ -1,38 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Checkout</title>
-</head>
-<body>
-  <h1>Checkout Page</h1>
+<form id="checkoutForm">
+  <input type="text" name="cardholder" placeholder="Cardholder Name" required>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="text" name="cardnumber" placeholder="Card Number" required>
+  <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
+  <input type="text" name="cvc" placeholder="CVC" required>
+  <button type="submit">Pay</button>
+</form>
 
-  <div>
-    <h2>Cart Summary</h2>
-    <ul id="cart-items"></ul>
-    <p>Total: <span id="cart-total">$0.00</span></p>
-  </div>
+<script>
+const checkoutForm = document.getElementById('checkoutForm');
+checkoutForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  if (!cart.length) return alert('Cart is empty!');
+  
+  const order = {
+    cart,
+    email: checkoutForm.email.value,
+    cardholder: checkoutForm.cardholder.value
+  };
 
-  <div>
-    <h2>Proceed to Payment</h2>
-    <form id="checkout-form">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
+  const orders = JSON.parse(localStorage.getItem('orders')) || [];
+  orders.push(order);
+  localStorage.setItem('orders', JSON.stringify(orders));
 
-      <label for="cardholder">Cardholder Name:</label>
-      <input type="text" id="cardholder" name="cardholder" required>
-
-      <label for="cardnumber">Card Number:</label>
-      <input type="text" id="cardnumber" name="cardnumber" required>
-
-      <label for="expiry">Expiry:</label>
-      <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
-
-      <label for="cvc">CVC:</label>
-      <input type="text" id="cvc" name="cvc" required>
-
-      <button type="submit">Complete Payment</button>
-    </form>
-  </div>
-</body>
-</html>
+  localStorage.removeItem('cart');
+  alert('Checkout successful!');
+  checkoutForm.reset();
+  window.location.href = 'menu.html';
+});
+</script>
