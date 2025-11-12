@@ -199,27 +199,41 @@
       }
     });
   </script>
-<!-- Hidden Admin Button -->
-<button id="adminBtn"
-  style="display:none; position:fixed; bottom:18px; right:18px; z-index:9999;
-         padding:10px 14px; background:#ff6f61; color:#fff; border:none; border-radius:8px; cursor:pointer;">
-  Admin
-</button>
 
-<script>
-  // Show admin button when Ctrl+Shift+A is pressed
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-      document.getElementById('adminBtn').style.display = 'block';
-    }
-  });
+  <!-- Hidden Admin Button -->
+  <button id="adminBtn" style="
+    display:none;
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    z-index:9999;
+    padding:12px 18px;
+    background:#ff6f61;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(0,0,0,0.3);
+  ">
+    Admin
+  </button>
 
-  // Open admin.html in a new tab when button clicked
-  document.getElementById('adminBtn').addEventListener('click', () => {
-    window.open('admin.html', '_blank');
-  });
-</script>
+  <script>
+    const adminBtn = document.getElementById('adminBtn');
+
+    // Show button with Ctrl+Shift+A
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        adminBtn.style.display = 'block';
+      }
+    });
+
+    // Open admin.html in new tab
+    adminBtn.addEventListener('click', () => {
+      window.open('admin.html', '_blank');
+    });
+  </script>
 
 </body>
 </html>
-
