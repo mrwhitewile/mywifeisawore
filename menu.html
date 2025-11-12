@@ -3,21 +3,183 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu - Bad Pickney6</title>
+  <title>Menu — Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #222;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    header button {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      padding: 8px 12px;
+      border: none;
+      background-color: #ff6f61;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    header button:hover {
+      background-color: #e65b50;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .menu-item {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .menu-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .menu-item img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+    .menu-item h3 {
+      margin: 10px 0 5px;
+    }
+    .menu-item p {
+      margin: 5px 0 10px;
+    }
+    .menu-item input {
+      width: 60px;
+      padding: 5px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    .menu-item button {
+      padding: 8px 12px;
+      border: none;
+      background-color: #ff6f61;
+      color: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .menu-item button:hover {
+      background-color: #e65b50;
+    }
+    .cart-section {
+      padding: 20px;
+      background: #fff;
+      margin: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .cart-section ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .cart-section a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #222;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+    .cart-section a:hover {
+      background-color: #444;
+    }
+  </style>
 </head>
 <body>
-  <h1>Menu / Shop</h1>
+
+<header>
+  <h1>Welcome, <span id="userName"></span>!</h1>
+  <button id="logoutBtn">Logout</button>
+</header>
+
+<section class="menu-grid">
+  <div class="menu-item">
+    <img src="assets/images/gold-card.png" alt="Gold Card">
+    <h3>Gold Card</h3>
+    <p>$99.99</p>
+    <input type="number" min="1" value="1" id="goldQty">
+    <button onclick="addToCart('Gold Card', 99.99, Number(document.getElementById('goldQty').value))">Add to Cart</button>
+  </div>
+
+  <div class="menu-item">
+    <img src="assets/images/silver-card.png" alt="Silver Card">
+    <h3>Silver Card</h3>
+    <p>$49.99</p>
+    <input type="number" min="1" value="1" id="silverQty">
+    <button onclick="addToCart('Silver Card', 49.99, Number(document.getElementById('silverQty').value))">Add to Cart</button>
+  </div>
+
+  <div class="menu-item">
+    <img src="assets/images/bronze-card.png" alt="Bronze Card">
+    <h3>Bronze Card</h3>
+    <p>$29.99</p>
+    <input type="number" min="1" value="1" id="bronzeQty">
+    <button onclick="addToCart('Bronze Card', 29.99, Number(document.getElementById('bronzeQty').value))">Add to Cart</button>
+  </div>
+
+  <div class="menu-item">
+    <img src="assets/images/platinum-card.png" alt="Platinum Card">
+    <h3>Platinum Card</h3>
+    <p>$149.99</p>
+    <input type="number" min="1" value="1" id="platinumQty">
+    <button onclick="addToCart('Platinum Card', 149.99, Number(document.getElementById('platinumQty').value))">Add to Cart</button>
+  </div>
+</section>
+
+<section class="cart-section">
+  <h2>Your Cart</h2>
   <ul id="cart-items"></ul>
   <p>Total: <span id="cart-total">$0.00</span></p>
-
-  <button onclick="addToCart('Gold Card', 99.99)">Add Gold Card $99.99</button>
-  <button onclick="addToCart('Silver Card', 49.99)">Add Silver Card $49.99</button>
-
   <a href="checkout.html">Go to Checkout</a>
+</section>
 
-  <script src="cart.js"></script>
+<script src="cart.js"></script>
+<script>
+  // Display logged-in user
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+  if (!loggedInUser) {
+    alert('Please login first!');
+    window.location.href = 'index.html';
+  } else {
+    document.getElementById('userName').textContent = loggedInUser.name;
+  }
+
+  // Logout button
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('loggedInUser');
+    window.location.href = 'index.html';
+  });
+</script>
+
 </body>
 </html>
+
+
 
 
