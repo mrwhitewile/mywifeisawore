@@ -1,191 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Bad Pickney6</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 1200px;
-      margin: auto;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0b0b0b;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #000;
+      color: #ff6f61;
       padding: 20px;
-      background: #f9f9f9;
+      text-align: center;
+      border-bottom: 2px solid #ff6f61;
     }
+
     h1, h2 {
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
+
+    .container {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      background: #fff;
+      background: #1b1b1b;
     }
+
     th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
+      border: 1px solid #333;
+      padding: 10px;
       text-align: left;
-      font-size: 0.9em;
     }
+
     th {
-      background: #f0f0f0;
+      background: #222;
+      color: #ff6f61;
     }
+
     button {
-      padding: 8px 14px;
-      margin-right: 8px;
-      cursor: pointer;
+      background: #ff6f61;
+      color: white;
       border: none;
       border-radius: 5px;
-      background: #ff6f61;
+      padding: 8px 12px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+
+    button:hover {
+      background: #ff876d;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background: #111;
       color: #fff;
     }
-    .small {
-      font-size: 0.85em;
-      color: #666;
+
+    .hidden {
+      display: none;
+    }
+
+    #loginScreen {
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    #tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
       margin-bottom: 20px;
     }
-    #adminContent { display: none; }
+
+    #tabs button.active {
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Admin Panel — Bad Pickney6</h1>
+    <p>Manage Users, Orders, and Blog Posts</p>
+  </header>
 
-  <h1>Admin Panel — Bad Pickney6</h1>
-  <p class="small">Enter the password to access admin data.</p>
-
-  <div id="passwordPrompt">
-    <input type="password" id="adminPassword" placeholder="Enter admin password" />
-    <button id="passwordSubmit">Submit</button>
+  <div id="loginScreen">
+    <h2>Admin Login</h2>
+    <input type="password" id="adminPass" placeholder="Enter admin password">
+    <button id="loginBtn">Login</button>
   </div>
 
-  <div id="adminContent">
-    <div>
-      <button id="reloadBtn">Reload Data</button>
-      <button id="exportAll">Export All JSON</button>
-      <button id="clearUsers">Clear Users</button>
-      <button id="clearOrders">Clear Orders</button>
+  <div class="container hidden" id="adminPanel">
+    <div id="tabs">
+      <button class="tabBtn active" data-target="usersSection">Users</button>
+      <button class="tabBtn" data-target="ordersSection">Orders</button>
+      <button class="tabBtn" data-target="blogSection">Blog</button>
     </div>
 
-    <h2>Users</h2>
-    <div id="usersSection"></div>
+    <!-- USERS -->
+    <div id="usersSection" class="section active"></div>
 
-    <h2>Orders</h2>
-    <div id="ordersSection"></div>
+    <!-- ORDERS -->
+    <div id="ordersSection" class="section"></div>
+
+    <!-- BLOG MANAGER -->
+    <div id="blogSection" class="section">
+      <h2>Blog Manager</h2>
+      <form id="blogForm">
+        <input type="hidden" id="editIndex">
+        <label>Title:</label>
+        <input type="text" id="blogTitle" required>
+        <label>Content:</label>
+        <textarea id="blogContent" rows="5" required></textarea>
+        <button type="submit">Save Post</button>
+      </form>
+      <h3>Existing Posts</h3>
+      <div id="blogList"></div>
+    </div>
   </div>
 
   <script>
-    const correctPassword = "teatimecrack213$";
+    const PASSWORD = "teatimecrack213$";
 
-    document.getElementById('passwordSubmit').addEventListener('click', () => {
-      const input = document.getElementById('adminPassword').value;
-      if(input === correctPassword) {
-        document.getElementById('passwordPrompt').style.display = 'none';
-        document.getElementById('adminContent').style.display = 'block';
-        renderAll();
+    const loginScreen = document.getElementById('loginScreen');
+    const adminPanel = document.getElementById('adminPanel');
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginBtn.addEventListener('click', () => {
+      const entered = document.getElementById('adminPass').value.trim();
+      if (entered === PASSWORD) {
+        loginScreen.classList.add('hidden');
+        adminPanel.classList.remove('hidden');
+        render();
       } else {
-        alert('Incorrect password!');
+        alert("Incorrect password!");
       }
     });
 
+    // Tab switching
+    document.querySelectorAll('.tabBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tabBtn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
+      });
+    });
+
+    // Escape HTML
     function escapeHtml(s = '') {
-      return String(s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      return String(s).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[m]));
     }
 
-    function renderUsers() {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const usersSection = document.getElementById('usersSection');
-
-      if (!users.length) {
-        usersSection.innerHTML = '<p>No users stored.</p>';
-        return;
-      }
-
-      let html = '<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Password</th></tr></thead><tbody>';
-      users.forEach((u, i) => {
-        html += `<tr>
-          <td>${i + 1}</td>
-          <td>${escapeHtml(u.name)}</td>
-          <td>${escapeHtml(u.email)}</td>
-          <td>${escapeHtml(u.password)}</td>
-        </tr>`;
-      });
-      html += '</tbody></table>';
-      usersSection.innerHTML = html;
-    }
-
-    function renderOrders() {
-      const ordersSection = document.getElementById('ordersSection');
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-
-      if (!orders.length) {
-        ordersSection.innerHTML = '<p>No orders stored.</p>';
-        return;
-      }
-
-      orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-      let html = '<table><thead><tr><th>#</th><th>Date</th><th>User Email</th><th>Cardholder</th><th>Card Info</th><th>Items</th><th>Total</th></tr></thead><tbody>';
-
-      orders.forEach((o, i) => {
-        const cardInfo = o.card
-          ? `${o.card.cardNumber} | Exp: ${o.card.expiry} | CVC: ${o.card.cvc}`
-          : '';
-        const items = (o.cart || []).map(it => `${escapeHtml(it.plan)} x${it.quantity || 1}`).join(', ');
-        const total = (o.cart || []).reduce((sum, it) => sum + ((Number(it.price) || 0) * (Number(it.quantity) || 1)), 0).toFixed(2);
-
-        html += `<tr>
-          <td>${i + 1}</td>
-          <td>${new Date(o.date).toLocaleString()}</td>
-          <td>${escapeHtml(o.email || '')}</td>
-          <td>${escapeHtml(o.cardholder || '')}</td>
-          <td>${escapeHtml(cardInfo)}</td>
-          <td>${items}</td>
-          <td>$${total}</td>
-        </tr>`;
-      });
-
-      html += '</tbody></table>';
-      ordersSection.innerHTML = html;
-    }
-
-    function renderAll() {
+    function render() {
       renderUsers();
       renderOrders();
+      renderBlog();
     }
 
-    function exportAll() {
-      const data = {
-        users: JSON.parse(localStorage.getItem('users') || '[]'),
-        orders: JSON.parse(localStorage.getItem('orders') || '[]'),
-        cart: JSON.parse(localStorage.getItem('cart') || '[]'),
-        loggedInUser: JSON.parse(localStorage.getItem('loggedInUser') || 'null')
+    // USERS
+    function renderUsers() {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const div = document.getElementById('usersSection');
+      if (!users.length) {
+        div.innerHTML = "<p>No users found.</p>";
+        return;
+      }
+      let html = `<h2>Registered Users</h2>
+      <table><tr><th>#</th><th>Name</th><th>Email</th><th>Password</th></tr>`;
+      users.forEach((u, i) => {
+        html += `<tr><td>${i+1}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.password)}</td></tr>`;
+      });
+      div.innerHTML = html + "</table>";
+    }
+
+    // ORDERS
+    function renderOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const div = document.getElementById('ordersSection');
+      if (!orders.length) {
+        div.innerHTML = "<p>No orders found.</p>";
+        return;
+      }
+      let html = `<h2>Orders</h2>
+      <table><tr><th>#</th><th>Email</th><th>Cardholder</th><th>Card Number</th><th>Items</th><th>Total</th></tr>`;
+      orders.forEach((o, i) => {
+        const items = (o.cart || []).map(it => `${it.plan} x${it.quantity||1}`).join(", ");
+        const total = (o.cart || []).reduce((t,it)=>t+((+it.price||0)*(+it.quantity||1)),0).toFixed(2);
+        html += `<tr><td>${i+1}</td><td>${escapeHtml(o.email||'')}</td><td>${escapeHtml(o.cardholder||'')}</td><td>${escapeHtml(o.card?.cardNumber||'')}</td><td>${escapeHtml(items)}</td><td>$${total}</td></tr>`;
+      });
+      div.innerHTML = html + "</table>";
+    }
+
+    // BLOG SECTION
+    const blogForm = document.getElementById('blogForm');
+    const blogTitle = document.getElementById('blogTitle');
+    const blogContent = document.getElementById('blogContent');
+    const blogList = document.getElementById('blogList');
+    const editIndex = document.getElementById('editIndex');
+
+    blogForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]');
+      const newPost = {
+        title: blogTitle.value.trim(),
+        content: blogContent.value.trim(),
+        date: new Date().toISOString()
       };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'badpickney6-data.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      if (editIndex.value) {
+        posts[editIndex.value] = newPost;
+        editIndex.value = '';
+      } else {
+        posts.push(newPost);
+      }
+      localStorage.setItem('blogPosts', JSON.stringify(posts));
+      blogForm.reset();
+      renderBlog();
+    });
+
+    function renderBlog() {
+      const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]');
+      if (!posts.length) {
+        blogList.innerHTML = "<p>No blog posts yet.</p>";
+        return;
+      }
+      let html = `<table><tr><th>#</th><th>Title</th><th>Date</th><th>Actions</th></tr>`;
+      posts.forEach((p,i)=>{
+        html += `<tr>
+          <td>${i+1}</td>
+          <td>${escapeHtml(p.title)}</td>
+          <td>${new Date(p.date).toLocaleString()}</td>
+          <td>
+            <button onclick="editPost(${i})">Edit</button>
+            <button onclick="deletePost(${i})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += "</table>";
+      blogList.innerHTML = html;
     }
 
-    function clearKey(key) {
-      if (!confirm('Are you sure you want to clear ' + key + '?')) return;
-      localStorage.removeItem(key);
-      renderAll();
-      alert(key + ' cleared.');
+    function editPost(i) {
+      const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]');
+      const p = posts[i];
+      blogTitle.value = p.title;
+      blogContent.value = p.content;
+      editIndex.value = i;
+      window.scrollTo(0, 0);
     }
 
-    document.getElementById('reloadBtn').addEventListener('click', renderAll);
-    document.getElementById('exportAll').addEventListener('click', exportAll);
-    document.getElementById('clearUsers').addEventListener('click', () => clearKey('users'));
-    document.getElementById('clearOrders').addEventListener('click', () => clearKey('orders'));
+    function deletePost(i) {
+      if (!confirm("Delete this post?")) return;
+      const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]');
+      posts.splice(i,1);
+      localStorage.setItem('blogPosts', JSON.stringify(posts));
+      renderBlog();
+    }
   </script>
 </body>
 </html>
