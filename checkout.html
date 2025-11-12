@@ -19,16 +19,9 @@
     padding: 20px;
     text-align: center;
   }
-  header h1 {
-    margin: 0;
-    font-size: 2rem;
-  }
+  header h1 { margin: 0; font-size: 2rem; }
 
-  .container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 20px;
-  }
+  .container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
 
   .checkout-grid {
     display: grid;
@@ -47,30 +40,11 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
 
-  h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-  }
+  h2 { margin-top: 0; margin-bottom: 15px; }
 
-  .cart-summary ul {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  .cart-summary li {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #eee;
-  }
-
-  .cart-total {
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-top: 10px;
-    text-align: right;
-  }
+  .cart-summary ul { list-style: none; padding-left: 0; }
+  .cart-summary li { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #eee; }
+  .cart-total { font-weight: bold; font-size: 1.2rem; text-align: right; margin-top: 10px; }
 
   .payment-form input {
     width: 100%;
@@ -92,18 +66,29 @@
     cursor: pointer;
     transition: background 0.3s;
   }
-  .payment-form button:hover {
-    background-color: #e65b50;
-  }
+  .payment-form button:hover { background-color: #e65b50; }
 
-  /* Animations */
-  .fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
-    opacity: 0;
+  /* Card Preview */
+  .card-preview {
+    background: linear-gradient(135deg, #ff6f61, #ff9472);
+    border-radius: 16px;
+    padding: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
   }
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
+  .card-preview:hover { transform: scale(1.02); }
+  .card-type { font-size: 1.2rem; font-weight: bold; }
+  .card-number { font-size: 1.4rem; letter-spacing: 2px; }
+  .cardholder { text-transform: uppercase; }
+  .card-amount { position: absolute; bottom: 20px; right: 20px; font-weight: bold; }
+
 </style>
 </head>
 <body>
@@ -112,20 +97,110 @@
   <h1>Checkout</h1>
 </header>
 
-<div class="container checkout-grid fade-in">
+<div class="container checkout-grid">
+
   <!-- Cart Summary -->
   <div class="cart-summary">
     <h2>Your Cart</h2>
-    <ul id="cart-items">
-      <!-- Cart items will be inserted here -->
-    </ul>
+    <ul id="cart-items"></ul>
     <p class="cart-total">Total: $<span id="cart-total">0.00</span></p>
   </div>
 
-  <!-- Payment Form -->
+  <!-- Payment Form + Card Preview -->
   <div class="payment-form">
     <h2>Payment Details</h2>
+
+    <!-- Card Preview -->
+    <div class="card-preview" id="cardPreview">
+      <div class="card-type" id="cardType">Card Type</div>
+      <div class="card-number" id="cardNumber">**** **** **** ****</div>
+      <div class="cardholder" id="cardHolder">Cardholder Name</div>
+      <div class="card-amount" id="cardAmount">$0.00</div>
+    </div>
+
     <form id="checkout-form">
-      <input type="text" name="cardholder" placeholder="Cardholder Name" required>
+      <input type="text" name="cardholder" id="inputName" placeholder="Cardholder Name" required>
       <input type="email" name="email" placeholder="Email Address" required>
-      <input type=
+      <input type="text" name="cardnumber" id="inputCardNumber" placeholder="Card Number" required>
+      <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
+      <input type="text" name="cvc" placeholder="CVC" required>
+      <button type="submit">Complete Purchase</button>
+    </form>
+  </div>
+
+</div>
+
+<script src="cart.js"></script>
+<script>
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  const cartItems = document.getElementById('cart-items');
+  const cartTotalEl = document.getElementById('cart-total');
+
+  function updateCartUI() {
+    cartItems.innerHTML = '';
+    let total = 0;
+    cart.forEach(item => {
+      const li = document.createElement('li');
+      const qty = Number(item.quantity || 1);
+      const lineTotal = (Number(item.price) || 0) * qty;
+      li.textContent = `${item.plan} x${qty} - $${lineTotal.toFixed(2)}`;
+      cartItems.appendChild(li);
+      total += lineTotal;
+    });
+    cartTotalEl.textContent = total.toFixed(2);
+    document.getElementById('cardAmount').textContent = `$${total.toFixed(2)}`;
+  }
+
+  updateCartUI();
+
+  // Card Preview
+  const inputName = document.getElementById('inputName');
+  const inputCardNumber = document.getElementById('inputCardNumber');
+
+  inputName.addEventListener('input', () => {
+    document.getElementById('cardHolder').textContent = inputName.value || 'Cardholder Name';
+  });
+
+  inputCardNumber.addEventListener('input', () => {
+    let num = inputCardNumber.value.replace(/\D/g, '').padEnd(16, '*');
+    num = num.replace(/(.{4})/g, '$1 ').trim();
+    document.getElementById('cardNumber').textContent = num;
+    // Detect card type
+    const firstDigit = inputCardNumber.value[0];
+    let type = 'Card';
+    if(firstDigit==='4') type='Visa';
+    else if(firstDigit==='5') type='MasterCard';
+    else if(firstDigit==='3') type='Amex';
+    document.getElementById('cardType').textContent = type;
+  });
+
+  // Checkout form
+  const checkoutForm = document.getElementById('checkout-form');
+  checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!cart.length) { alert('Cart is empty!'); return; }
+
+    const email = checkoutForm.email.value.trim();
+    const cardholder = checkoutForm.cardholder.value.trim();
+    const cardnumber = checkoutForm.cardnumber.value.trim();
+    const expiry = checkoutForm.expiry.value.trim();
+    const cvc = checkoutForm.cvc.value.trim();
+
+    if (!email || !cardholder || !cardnumber || !expiry || !cvc) {
+      alert('Please fill all fields.');
+      return;
+    }
+
+    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    orders.push({ email, cardholder, card:{cardNumber: cardnumber, expiry, cvc}, cart });
+    localStorage.setItem('orders', JSON.stringify(orders));
+
+    alert('Purchase completed! Thank you.');
+    localStorage.removeItem('cart');
+    window.location.href = 'menu.html';
+  });
+</script>
+
+</body>
+</html>
