@@ -2,29 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Card Demo - Menu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu - Bad Pickney6</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Card Menu</h1>
+  <h1>Menu / Shop</h1>
+  <ul id="cart-items"></ul>
+  <p>Total: <span id="cart-total">$0.00</span></p>
 
-  <div>
-    <h2>Standard Cards</h2>
-    <button onclick="addToCart('Standard Card', 10)">Standard Card - $10</button>
-  </div>
+  <button onclick="addToCart('Gold Card', 99.99)">Add Gold Card $99.99</button>
+  <button onclick="addToCart('Silver Card', 49.99)">Add Silver Card $49.99</button>
 
-  <div>
-    <h2>Premium Cards</h2>
-    <button onclick="addToCart('Premium Card', 25)">Premium Card - $25</button>
-  </div>
+  <a href="checkout.html">Go to Checkout</a>
 
-  <div>
-    <h2>Elite Cards</h2>
-    <button onclick="addToCart('Elite Card', 50)">Elite Card - $50</button>
-  </div>
-
-  <div>
-    <a href="checkout.html">Go to Checkout</a>
-  </div>
+  <script src="cart.js"></script>
 </body>
 </html>
+
 
