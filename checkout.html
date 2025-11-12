@@ -1,234 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout — Bad Pickney6</title>
-<link rel="stylesheet" href="styles.css">
-<style>
-/* --- Body & Header --- */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(180deg, #f0f2f5, #e0e4ea);
-  margin: 0;
-  padding: 0;
-}
-header {
-  background-color: #222;
-  color: #fff;
-  text-align: center;
-  padding: 25px 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-header h1 { margin: 0; font-size: 2rem; }
-
-/* --- Container & Grid --- */
-.container {
-  max-width: 950px;
-  margin: 30px auto;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-}
-@media(max-width: 768px) {
-  .container { grid-template-columns: 1fr; gap: 25px; }
-}
-
-/* --- Cart Summary & Payment Form --- */
-.cart-summary, .payment-form {
-  background: #fff;
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-.cart-summary:hover, .payment-form:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-}
-
-h2 { margin-top: 0; margin-bottom: 20px; }
-
-/* --- Cart Items --- */
-.cart-summary ul { list-style: none; padding-left: 0; }
-.cart-summary li {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eee;
-  font-weight: 500;
-}
-.cart-total {
-  font-weight: bold;
-  font-size: 1.3rem;
-  text-align: right;
-  margin-top: 15px;
-}
-
-/* --- Payment Form --- */
-.payment-form input {
-  width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-.payment-form input:focus {
-  border-color: #ff6f61;
-  box-shadow: 0 0 8px rgba(255,111,97,0.3);
-}
-.payment-form button {
-  width: 100%;
-  padding: 14px;
-  background-color: #ff6f61;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-}
-.payment-form button:hover {
-  background-color: #e65b50;
-  transform: scale(1.02);
-}
-
-/* --- Card Preview --- */
-.card-preview {
-  background: linear-gradient(135deg, #ff6f61, #ff9472);
-  border-radius: 20px;
-  padding: 25px 30px;
-  color: #fff;
-  margin-bottom: 25px;
-  position: relative;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-  transition: transform 0.3s;
-}
-.card-preview:hover { transform: scale(1.03); }
-.card-type { font-size: 1.4rem; font-weight: bold; }
-.card-number { font-size: 1.5rem; letter-spacing: 2px; }
-.cardholder { text-transform: uppercase; font-weight: 600; }
-.card-amount { position: absolute; bottom: 25px; right: 30px; font-weight: bold; font-size: 1.2rem; }
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Bad Pickney6</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 { text-align: center; margin-bottom: 20px; }
+    form { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #ff6f61; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #e55b4f; }
+  </style>
 </head>
 <body>
 
-<header>
   <h1>Checkout</h1>
-</header>
 
-<div class="container">
+  <form id="checkoutForm">
+    <input type="email" name="email" placeholder="Your Email" required>
+    <input type="text" name="cardholder" placeholder="Cardholder Name" required>
+    <input type="text" name="cardnumber" placeholder="Card Number" required>
+    <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
+    <input type="text" name="cvc" placeholder="CVC" required>
+    <button type="submit">Submit Order</button>
+  </form>
 
-  <!-- Cart Summary -->
-  <div class="cart-summary">
-    <h2>Your Cart</h2>
-    <ul id="cart-items"></ul>
-    <p class="cart-total">Total: $<span id="cart-total">0.00</span></p>
-  </div>
+  <script>
+    const checkoutForm = document.getElementById('checkoutForm');
 
-  <!-- Payment Form + Card Preview -->
-  <div class="payment-form">
-    <h2>Payment Details</h2>
+    checkoutForm.addEventListener('submit', function(e) {
+      e.preventDefault();
 
-    <!-- Card Preview -->
-    <div class="card-preview" id="cardPreview">
-      <div class="card-type" id="cardType">Card Type</div>
-      <div class="card-number" id="cardNumber">**** **** **** ****</div>
-      <div class="cardholder" id="cardHolder">Cardholder Name</div>
-      <div class="card-amount" id="cardAmount">$0.00</div>
-    </div>
+      const email = checkoutForm.email.value.trim();
+      const cardholder = checkoutForm.cardholder.value.trim();
+      const cardnumber = checkoutForm.cardnumber.value.trim();
+      const expiry = checkoutForm.expiry.value.trim();
+      const cvc = checkoutForm.cvc.value.trim();
 
-    <form id="checkout-form">
-      <input type="text" name="cardholder" id="inputName" placeholder="Cardholder Name" required>
-      <input type="email" name="email" placeholder="Email Address" required>
-      <input type="text" name="cardnumber" id="inputCardNumber" placeholder="Card Number" required>
-      <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
-      <input type="text" name="cvc" placeholder="CVC" required>
-      <button type="submit">Complete Purchase</button>
-    </form>
-  </div>
+      if (!email || !cardholder || !cardnumber || !expiry || !cvc) {
+        alert('Please fill out all fields.');
+        return;
+      }
 
-</div>
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-<script src="cart.js"></script>
-<script>
-const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
 
-// Update Cart Summary
-const cartItems = document.getElementById('cart-items');
-const cartTotalEl = document.getElementById('cart-total');
-function updateCartUI() {
-  cartItems.innerHTML = '';
-  let total = 0;
-  cart.forEach(item => {
-    const li = document.createElement('li');
-    const qty = Number(item.quantity || 1);
-    const lineTotal = (Number(item.price) || 0) * qty;
-    li.textContent = `${item.plan} x${qty} - $${lineTotal.toFixed(2)}`;
-    cartItems.appendChild(li);
-    total += lineTotal;
-  });
-  cartTotalEl.textContent = total.toFixed(2);
-  document.getElementById('cardAmount').textContent = `$${total.toFixed(2)}`;
-}
-updateCartUI();
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
 
-// Card Preview Live Update
-const inputName = document.getElementById('inputName');
-const inputCardNumber = document.getElementById('inputCardNumber');
+      const order = {
+        date: new Date().toISOString(),
+        email: email,
+        cardholder: cardholder,
+        card: { cardNumber: cardnumber, expiry: expiry, cvc: cvc },
+        cart: cart
+      };
 
-inputName.addEventListener('input', () => {
-  document.getElementById('cardHolder').textContent = inputName.value || 'Cardholder Name';
-});
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
 
-inputCardNumber.addEventListener('input', () => {
-  let num = inputCardNumber.value.replace(/\D/g, '').padEnd(16, '*');
-  num = num.replace(/(.{4})/g, '$1 ').trim();
-  document.getElementById('cardNumber').textContent = num;
-  // Detect basic card type
-  const firstDigit = inputCardNumber.value[0];
-  let type = 'Card';
-  if(firstDigit==='4') type='Visa';
-  else if(firstDigit==='5') type='MasterCard';
-  else if(firstDigit==='3') type='Amex';
-  document.getElementById('cardType').textContent = type;
-});
+      // Clear cart
+      localStorage.removeItem('cart');
 
-// Checkout Form Submit
-const checkoutForm = document.getElementById('checkout-form');
-checkoutForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (!cart.length) { alert('Cart is empty!'); return; }
-
-  const email = checkoutForm.email.value.trim();
-  const cardholder = checkoutForm.cardholder.value.trim();
-  const cardnumber = checkoutForm.cardnumber.value.trim();
-  const expiry = checkoutForm.expiry.value.trim();
-  const cvc = checkoutForm.cvc.value.trim();
-
-  if (!email || !cardholder || !cardnumber || !expiry || !cvc) {
-    alert('Please fill all fields.');
-    return;
-  }
-
-  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  orders.push({ email, cardholder, card:{cardNumber: cardnumber, expiry, cvc}, cart });
-  localStorage.setItem('orders', JSON.stringify(orders));
-
-  alert('Purchase completed! Thank you.');
-  localStorage.removeItem('cart');
-  window.location.href = 'menu.html';
-});
-</script>
+      alert("thanks and bad pickney loves you as a jagga cont to blv n trust utes");
+      checkoutForm.reset();
+      window.location.href = "menu.html"; // redirect back to menu
+    });
+  </script>
 
 </body>
 </html>
