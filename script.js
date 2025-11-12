@@ -119,3 +119,47 @@ document.getElementById('contact-form').addEventListener('submit', function (e) 
   // You can add logic to send the form via email or API here
   alert('Message sent!');
 });
+
+  /* Password Strength Meter */
+.password-strength-meter {
+  width: 100%;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.password-strength-meter .meter {
+  height: 100%;
+  width: 0;
+  background-color: #ff6f61;
+  transition: width 0.3s ease;
+}
+
+/* Animations for Auth Forms */
+.auth-form {
+  display: none;
+  max-width: 400px;
+  margin: auto;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.auth-form[style*="display: block"] {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}    
