@@ -235,5 +235,28 @@
     });
   </script>
 
+  <script>
+  // BLOG SECTION: Display latest posts
+  document.addEventListener('DOMContentLoaded', () => {
+    const blogContainer = document.getElementById('blogPostsContainer');
+    const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]')
+      .sort((a,b)=> new Date(b.date) - new Date(a.date)); // newest first
+
+    if (!posts.length) {
+      blogContainer.innerHTML = '<p>No blog posts yet — check back soon.</p>';
+      return;
+    }
+
+    blogContainer.innerHTML = posts.slice(0, 3).map(p => `
+      <div class="blog-post">
+        <h3>${p.title}</h3>
+        <p class="blog-date">${new Date(p.date).toLocaleDateString()}</p>
+        <p>${p.content.length > 150 ? p.content.substring(0,150) + '...' : p.content}</p>
+      </div>
+    `).join('');
+  });
+</script>
+
 </body>
 </html>
+
