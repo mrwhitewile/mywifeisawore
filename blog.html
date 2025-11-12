@@ -1,1 +1,74 @@
-<li><a href="blog.html">Blog</a></li>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — CC Seller</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html" class="active">Register</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </nav>
+    <h1>CC Seller</h1>
+    <p>Buy Fake Credit Cards Online (Demo Only)</p>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>Create Your Account</h2>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required placeholder="Enter username" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required placeholder="Enter email" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required placeholder="Enter password" />
+        </div>
+
+        <button type="submit" class="btn">Register</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 CC Seller. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Simple registration demo: store users in localStorage
+    document.getElementById("register-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!username || !email || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      users.push({ username, email, password, date: new Date().toISOString() });
+      localStorage.setItem("users", JSON.stringify(users));
+
+      alert("Registration successful!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
+
