@@ -1,18 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // ========== Cart ==========
+  // ========== CART ==========
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   updateCartUI();
 
-  // Expose addToCart globally
   window.addToCart = function (plan, price, quantity = 1) {
     const q = Number(quantity) || 1;
     const p = Number(price) || 0;
-    cart.push({ plan, price: p, quantity: q });
+
+    // Check if item already exists in cart
+    const existing = cart.find(item => item.plan === plan);
+    if (existing) {
+      existing.quantity += q;
+    } else {
+      cart.push({ plan, price: p, quantity: q });
+    }
+
     saveAndUpdateCart();
     alert(`Added ${plan} x${q} to cart.`);
   };
 
-  // Helper: save cart and update UI
   function saveAndUpdateCart() {
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartUI();
@@ -21,13 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateCartUI() {
     const cartItems = document.getElementById("cart-items");
     const cartTotal = document.getElementById("cart-total");
-
     if (!cartItems || !cartTotal) return;
 
     cartItems.innerHTML = "";
     let total = 0;
 
-    cart.forEach((item, index) => {
+    cart.forEach(item => {
       const li = document.createElement("li");
       const qty = Number(item.quantity) || 1;
       const lineTotal = (Number(item.price) || 0) * qty;
@@ -39,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cartTotal.textContent = `$${total.toFixed(2)}`;
   }
 
-  // ========== Login ==========
+  // ========== LOGIN ==========
   const loginForm = document.getElementById("login-form");
   if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
@@ -48,21 +53,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const password = loginForm.querySelector('[name="password"]').value;
 
       const users = JSON.parse(localStorage.getItem("users")) || [];
-
-      const user = users.find(
-        (u) => u.username === username && u.password === password
-      );
+      const user = users.find(u => u.username === username && u.password === password);
 
       if (user) {
         alert("Login successful!");
-        window.location.href = "menu.html";
+        window.location.href = "menu.html"; // Redirect to menu
       } else {
         alert("Invalid username or password.");
       }
     });
   }
 
-  // ========== Register ==========
+  // ========== REGISTER ==========
   const registerForm = document.getElementById("register-form");
   if (registerForm) {
     registerForm.addEventListener("submit", function (e) {
@@ -76,8 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const users = JSON.parse(localStorage.getItem("users")) || [];
-
-      if (users.some((u) => u.username === username)) {
+      if (users.some(u => u.username === username)) {
         alert("That username is already taken — choose another.");
         return;
       }
@@ -89,12 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ========== Checkout Form ==========
+  // ========== CHECKOUT ==========
   const checkoutForm = document.getElementById("checkout-form");
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", function (e) {
       e.preventDefault();
-
       const email = checkoutForm.querySelector('[name="email"]').value.trim();
       const name = checkoutForm.querySelector('[name="cardholder"]').value.trim();
       const cardNumber = checkoutForm.querySelector('[name="cardnumber"]').value.trim();
@@ -106,60 +106,54 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Save user data and card info
-      const user = {
+      const order = {
         username: name,
         email: email,
-        card: {
-          cardNumber: cardNumber,
-          expiry: expiry,
-          cv
-document.getElementById('contact-form').addEventListener('submit', function (e) {
-  e.preventDefault();
-  // You can add logic to send the form via email or API here
-  alert('Message sent!');
+        card: { cardNumber, expiry, cvc },
+        cart: cart
+      };
+
+      const orders = JSON.parse(localStorage.getItem("orders")) || [];
+      orders.push(order);
+      localStorage.setItem("orders", JSON.stringify(orders));
+
+      alert("Checkout successful!");
+      cart = [];
+      localStorage.removeItem("cart");
+      updateCartUI();
+      checkoutForm.reset();
+    });
+  }
+
+  // ========== CONTACT FORM ==========
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      alert('Message sent!');
+      contactForm.reset();
+    });
+  }
+
+  // ========== PASSWORD STRENGTH ==========
+  const passwordInput = document.querySelector('#register-form [name="password"]');
+  const meter = document.querySelector('.password-strength-meter .meter');
+
+  passwordInput?.addEventListener('input', () => {
+    const val = passwordInput.value;
+    let strength = 0;
+    if (val.length > 5) strength += 30;
+    if (/[A-Z]/.test(val)) strength += 30;
+    if (/[0-9]/.test(val)) strength += 20;
+    if (/[^A-Za-z0-9]/.test(val)) strength += 20;
+    meter.style.width = strength + '%';
+  });
+
+  // ========== AUTH FORM ANIMATION ==========
+  document.querySelectorAll('.auth-form-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+      document.querySelector(btn.dataset.target).classList.add('active');
+    });
+  });
 });
-
-  /* Password Strength Meter */
-.password-strength-meter {
-  width: 100%;
-  height: 10px;
-  background-color: #ddd;
-  border-radius: 5px;
-  margin-top: 10px;
-  overflow: hidden;
-}
-
-.password-strength-meter .meter {
-  height: 100%;
-  width: 0;
-  background-color: #ff6f61;
-  transition: width 0.3s ease;
-}
-
-/* Animations for Auth Forms */
-.auth-form {
-  display: none;
-  max-width: 400px;
-  margin: auto;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeIn 1s ease-out forwards;
-}
-
-.auth-form[style*="display: block"] {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}    
