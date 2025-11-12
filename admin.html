@@ -1,166 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Bad Pickney6</title>
-<style>
-  body { font-family: Arial, sans-serif; max-width: 1000px; margin:auto; padding:20px; background:#f5f5f5; }
-  h1, h2 { margin-bottom:10px; }
-  table { width:100%; border-collapse: collapse; margin-bottom:20px; }
-  th, td { border:1px solid #ddd; padding:8px; text-align:left; }
-  th { background:#eee; }
-  input, button { padding:8px; margin:5px 0; }
-  .hidden { display:none; }
-  .controls { margin: 12px 0; }
-  .controls button { margin-right:8px; padding:8px 12px; }
-  #filterUser { width: 100%; padding:8px; margin-bottom:12px; border-radius:6px; border:1px solid #ccc; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Bad Pickney6</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    button {
+      padding: 8px 14px;
+      margin-right: 8px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: #ff6f61;
+      color: #fff;
+    }
+    .small {
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    #adminContent { display: none; }
+  </style>
 </head>
 <body>
 
-<h1>Admin Panel — Bad Pickney6</h1>
+  <h1>Admin Panel — Bad Pickney6</h1>
+  <p class="small">Enter the password to access admin data.</p>
 
-<div id="passwordSection">
-  <p>Enter admin password to access:</p>
-  <input type="password" id="adminPassword" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <p id="errorMsg" style="color:red;"></p>
-</div>
-
-<div id="adminContent" class="hidden">
-  <div class="controls">
-    <button id="reloadBtn">Reload Data</button>
-    <button id="exportAll">Export All JSON</button>
-    <button id="clearUsers">Clear Users</button>
-    <button id="clearOrders">Clear Orders</button>
+  <div id="passwordPrompt">
+    <input type="password" id="adminPassword" placeholder="Enter admin password" />
+    <button id="passwordSubmit">Submit</button>
   </div>
 
-  <h2>Users</h2>
-  <div id="usersSection"></div>
+  <div id="adminContent">
+    <div>
+      <button id="reloadBtn">Reload Data</button>
+      <button id="exportAll">Export All JSON</button>
+      <button id="clearUsers">Clear Users</button>
+      <button id="clearOrders">Clear Orders</button>
+    </div>
 
-  <h2>Orders</h2>
-  <input type="text" id="filterUser" placeholder="Filter by user email">
-  <div id="ordersSection"></div>
-</div>
+    <h2>Users</h2>
+    <div id="usersSection"></div>
 
-<script>
-  // <-- ADMIN PASSWORD: change here if needed -->
-  const ADMIN_PASSWORD = "teatimecrack213$";
+    <h2>Orders</h2>
+    <div id="ordersSection"></div>
+  </div>
 
-  document.getElementById('loginBtn').addEventListener('click', () => {
-    const pass = document.getElementById('adminPassword').value;
-    if (pass === ADMIN_PASSWORD) {
-      document.getElementById('passwordSection').style.display = 'none';
-      document.getElementById('adminContent').classList.remove('hidden');
-      render();
-    } else {
-      document.getElementById('errorMsg').textContent = 'Incorrect password.';
+  <script>
+    const correctPassword = "teatimecrack213$";
+
+    document.getElementById('passwordSubmit').addEventListener('click', () => {
+      const input = document.getElementById('adminPassword').value;
+      if(input === correctPassword) {
+        document.getElementById('passwordPrompt').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+        renderAll();
+      } else {
+        alert('Incorrect password!');
+      }
+    });
+
+    function escapeHtml(s = '') {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
-  });
 
-  // Escape HTML for safe display
-  function escapeHtml(s=''){
-    return String(s)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#039;');
-  }
+    function renderUsers() {
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const usersSection = document.getElementById('usersSection');
 
-  // Render users and orders
-  function render(){
-    const users = JSON.parse(localStorage.getItem('users')||'[]');
-    const orders = JSON.parse(localStorage.getItem('orders')||'[]');
+      if (!users.length) {
+        usersSection.innerHTML = '<p>No users stored.</p>';
+        return;
+      }
 
-    // Users table
-    const usersSection = document.getElementById('usersSection');
-    if(!users.length){
-      usersSection.innerHTML = '<p>No users stored.</p>';
-    } else {
       let html = '<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Password</th></tr></thead><tbody>';
-      users.forEach((u,i) => {
-        html += `<tr><td>${i+1}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td>${escapeHtml(u.password)}</td></tr>`;
+      users.forEach((u, i) => {
+        html += `<tr>
+          <td>${i + 1}</td>
+          <td>${escapeHtml(u.name)}</td>
+          <td>${escapeHtml(u.email)}</td>
+          <td>${escapeHtml(u.password)}</td>
+        </tr>`;
       });
       html += '</tbody></table>';
       usersSection.innerHTML = html;
     }
 
-    // Orders table (sorted newest first)
-    const ordersSection = document.getElementById('ordersSection');
-    if(!orders.length){
-      ordersSection.innerHTML = '<p>No orders stored.</p>';
-    } else {
-      const sorted = orders.slice().sort((a,b) => new Date(b.date || b._date || 0) - new Date(a.date || a._date || 0));
-      let html = '<table><thead><tr><th>#</th><th>Date</th><th>Email</th><th>Cardholder</th><th>Card</th><th>Items</th><th>Total</th></tr></thead><tbody>';
-      sorted.forEach((o,i) => {
-        const card = o.card?.cardNumber || '';
-        const items = (o.cart||[]).map(it => `${escapeHtml(it.plan)} x${it.quantity||1}`).join(', ');
-        const total = (o.cart||[]).reduce((sum,it)=>sum + ((Number(it.price)||0)*(Number(it.quantity)||1)),0).toFixed(2);
-        const d = o.date ? new Date(o.date).toLocaleString() : (o._date ? new Date(o._date).toLocaleString() : 'Unknown');
-        html += `<tr><td>${i+1}</td><td>${escapeHtml(d)}</td><td>${escapeHtml(o.email || '')}</td><td>${escapeHtml(o.cardholder || '')}</td><td>${escapeHtml(card)}</td><td>${escapeHtml(items)}</td><td>$${total}</td></tr>`;
+    function renderOrders() {
+      const ordersSection = document.getElementById('ordersSection');
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+      if (!orders.length) {
+        ordersSection.innerHTML = '<p>No orders stored.</p>';
+        return;
+      }
+
+      orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      let html = '<table><thead><tr><th>#</th><th>Date</th><th>User Email</th><th>Cardholder</th><th>Card Info</th><th>Items</th><th>Total</th></tr></thead><tbody>';
+
+      orders.forEach((o, i) => {
+        const cardInfo = o.card
+          ? `${o.card.cardNumber} | Exp: ${o.card.expiry} | CVC: ${o.card.cvc}`
+          : '';
+        const items = (o.cart || []).map(it => `${escapeHtml(it.plan)} x${it.quantity || 1}`).join(', ');
+        const total = (o.cart || []).reduce((sum, it) => sum + ((Number(it.price) || 0) * (Number(it.quantity) || 1)), 0).toFixed(2);
+
+        html += `<tr>
+          <td>${i + 1}</td>
+          <td>${new Date(o.date).toLocaleString()}</td>
+          <td>${escapeHtml(o.email || '')}</td>
+          <td>${escapeHtml(o.cardholder || '')}</td>
+          <td>${escapeHtml(cardInfo)}</td>
+          <td>${items}</td>
+          <td>$${total}</td>
+        </tr>`;
       });
+
       html += '</tbody></table>';
       ordersSection.innerHTML = html;
     }
-  }
 
-  // Buttons
-  document.getElementById('reloadBtn').addEventListener('click', render);
+    function renderAll() {
+      renderUsers();
+      renderOrders();
+    }
 
-  document.getElementById('exportAll').addEventListener('click', () => {
-    const data = {
-      users: JSON.parse(localStorage.getItem('users')||'[]'),
-      orders: JSON.parse(localStorage.getItem('orders')||'[]'),
-      cart: JSON.parse(localStorage.getItem('cart')||'[]'),
-      loggedInUser: JSON.parse(localStorage.getItem('loggedInUser')||'null')
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'badpickney6-data.json';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
+    function exportAll() {
+      const data = {
+        users: JSON.parse(localStorage.getItem('users') || '[]'),
+        orders: JSON.parse(localStorage.getItem('orders') || '[]'),
+        cart: JSON.parse(localStorage.getItem('cart') || '[]'),
+        loggedInUser: JSON.parse(localStorage.getItem('loggedInUser') || 'null')
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'badpickney6-data.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
 
-  document.getElementById('clearUsers').addEventListener('click', () => {
-    if (!confirm('Clear users?')) return;
-    localStorage.removeItem('users');
-    render();
-  });
+    function clearKey(key) {
+      if (!confirm('Are you sure you want to clear ' + key + '?')) return;
+      localStorage.removeItem(key);
+      renderAll();
+      alert(key + ' cleared.');
+    }
 
-  document.getElementById('clearOrders').addEventListener('click', () => {
-    if (!confirm('Clear orders?')) return;
-    localStorage.removeItem('orders');
-    render();
-  });
-
-  // Filter by user email
-  document.getElementById('filterUser').addEventListener('input', (e) => {
-    const filter = e.target.value.toLowerCase();
-    const orders = JSON.parse(localStorage.getItem('orders')||'[]').filter(o => (o.email||'').toLowerCase().includes(filter));
-    renderOrders(orders);
-  });
-
-  function renderOrders(orders){
-    const ordersSection = document.getElementById('ordersSection');
-    if(!orders.length){ ordersSection.innerHTML = '<p>No orders stored.</p>'; return; }
-    const sorted = orders.slice().sort((a,b) => new Date(b.date || b._date || 0) - new Date(a.date || a._date || 0));
-    let html = '<table><thead><tr><th>#</th><th>Date</th><th>Email</th><th>Cardholder</th><th>Card</th><th>Items</th><th>Total</th></tr></thead><tbody>';
-    sorted.forEach((o,i) => {
-      const card = o.card?.cardNumber || '';
-      const items = (o.cart||[]).map(it => `${escapeHtml(it.plan)} x${it.quantity||1}`).join(', ');
-      const total = (o.cart||[]).reduce((sum,it)=>sum + ((Number(it.price)||0)*(Number(it.quantity)||1)),0).toFixed(2);
-      const d = o.date ? new Date(o.date).toLocaleString() : (o._date ? new Date(o._date).toLocaleString() : 'Unknown');
-      html += `<tr><td>${i+1}</td><td>${escapeHtml(d)}</td><td>${escapeHtml(o.email||'')}</td><td>${escapeHtml(o.cardholder||'')}</td><td>${escapeHtml(card)}</td><td>${escapeHtml(items)}</td><td>$${total}</td></tr>`;
-    });
-    html += '</tbody></table>';
-    ordersSection.innerHTML = html;
-  }
-</script>
+    document.getElementById('reloadBtn').addEventListener('click', renderAll);
+    document.getElementById('exportAll').addEventListener('click', exportAll);
+    document.getElementById('clearUsers').addEventListener('click', () => clearKey('users'));
+    document.getElementById('clearOrders').addEventListener('click', () => clearKey('orders'));
+  </script>
 </body>
 </html>
