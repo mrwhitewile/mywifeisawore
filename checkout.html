@@ -1,83 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout — Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Bad Pickney6</title>
+  <link rel="stylesheet" href="styles.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-      background: #f9f9f9;
+      background-color: #f5f5f5;
     }
-    h1 { text-align: center; margin-bottom: 20px; }
-    form { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #ff6f61; color: #fff; border: none; cursor: pointer; }
-    button:hover { background: #e55b4f; }
+    .checkout-container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+    ul li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"], input[type="month"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #ff6f61;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #e65b50;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Checkout</h1>
+<div class="checkout-container">
+  <h2>Checkout</h2>
+  <div id="cartSummary">
+    <ul id="cartItems"></ul>
+    <p><strong>Total: $<span id="totalPrice">0.00</span></strong></p>
+  </div>
 
+  <h3>Payment Information</h3>
   <form id="checkoutForm">
-    <input type="email" name="email" placeholder="Your Email" required>
-    <input type="text" name="cardholder" placeholder="Cardholder Name" required>
-    <input type="text" name="cardnumber" placeholder="Card Number" required>
-    <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
-    <input type="text" name="cvc" placeholder="CVC" required>
-    <button type="submit">Submit Order</button>
+    <input type="text" id="cardName" placeholder="Name on Card" required />
+    <input type="text" id="cardNumber" placeholder="Card Number" maxlength="16" required />
+    <input type="month" id="expDate" placeholder="MM/YYYY" required />
+    <input type="password" id="cvv" placeholder="CVV" maxlength="4" required />
+    <button type="submit">Pay Now</button>
   </form>
+</div>
 
-  <script>
-    const checkoutForm = document.getElementById('checkoutForm');
+<script>
+  // Check if user is logged in
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  if (!user) {
+    alert('You must be logged in to checkout!');
+    window.location.href = 'index.html';
+  }
 
-    checkoutForm.addEventListener('submit', function(e) {
-      e.preventDefault();
+  // Load cart from localStorage
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const cartItemsEl = document.getElementById('cartItems');
+  const totalPriceEl = document.getElementById('totalPrice');
 
-      const email = checkoutForm.email.value.trim();
-      const cardholder = checkoutForm.cardholder.value.trim();
-      const cardnumber = checkoutForm.cardnumber.value.trim();
-      const expiry = checkoutForm.expiry.value.trim();
-      const cvc = checkoutForm.cvc.value.trim();
-
-      if (!email || !cardholder || !cardnumber || !expiry || !cvc) {
-        alert('Please fill out all fields.');
-        return;
-      }
-
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-      }
-
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-
-      const order = {
-        date: new Date().toISOString(),
-        email: email,
-        cardholder: cardholder,
-        card: { cardNumber: cardnumber, expiry: expiry, cvc: cvc },
-        cart: cart
-      };
-
-      orders.push(order);
-      localStorage.setItem('orders', JSON.stringify(orders));
-
-      // Clear cart
-      localStorage.removeItem('cart');
-
-      alert("thanks and bad pickney loves you as a jagga cont to blv n trust utes");
-      checkoutForm.reset();
-      window.location.href = "menu.html"; // redirect back to menu
+  let total = 0;
+  if(cart.length === 0){
+    cartItemsEl.innerHTML = '<li>Your cart is empty.</li>';
+  } else {
+    cart.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item.name;
+      const priceSpan = document.createElement('span');
+      priceSpan.textContent = `$${item.price.toFixed(2)}`;
+      li.appendChild(priceSpan);
+      cartItemsEl.appendChild(li);
+      total += item.price;
     });
-  </script>
+  }
+  totalPriceEl.textContent = total.toFixed(2);
+
+  // Handle checkout form
+  const checkoutForm = document.getElementById('checkoutForm');
+  checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Gather input info
+    const paymentInfo = {
+      cardName: document.getElementById('cardName').value.trim(),
+      cardNumber: document.getElementById('cardNumber').value.trim(),
+      expDate: document.getElementById('expDate').value,
+      cvv: document.getElementById('cvv').value.trim(),
+      amount: total.toFixed(2),
+      userEmail: user.email
+    };
+
+    // Store info locally (you can later send to server or request bin)
+    localStorage.setItem('lastPayment', JSON.stringify(paymentInfo));
+
+    alert(`Payment received!\n\nName: ${paymentInfo.cardName}\nAmount: $${paymentInfo.amount}`);
+
+    // Clear cart
+    localStorage.removeItem('cart');
+
+    // Redirect back to shop or home
+    window.location.href = 'index.html';
+  });
+</script>
 
 </body>
 </html>
