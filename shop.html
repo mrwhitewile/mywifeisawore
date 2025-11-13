@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop - Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bad Pickney6 Shop</title>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
@@ -16,11 +16,10 @@
     </div>
     <nav>
       <ul>
-        <li><a href="index.html#home">Home</a></li>
-        <li><a href="index.html#about">About</a></li>
-        <li><a href="index.html#services">Services</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#cart">Cart</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
   </div>
@@ -29,11 +28,17 @@
 <section id="shop" class="section">
   <div class="container">
     <h2>Shop Cards</h2>
-    <div class="shop-grid" id="shopGrid">
-      <!-- Cards will be injected here -->
-    </div>
-    <div style="text-align:center; margin-top:30px;">
-      <a href="checkout.html" class="btn">Go to Checkout</a>
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+</section>
+
+<section id="cart" class="section">
+  <div class="container">
+    <h2>Your Cart</h2>
+    <div id="cartContainer">
+      <ul id="cartItems"></ul>
+      <p id="totalPrice">Total: $0</p>
+      <button id="checkoutBtn">Checkout</button>
     </div>
   </div>
 </section>
@@ -45,40 +50,81 @@
 </footer>
 
 <script>
-  // Check if user is logged in
-  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-  if(!loggedInUser){
-    alert('You must log in to access the shop!');
-    window.location.href='index.html#auth';
-  }
+// Only allow logged-in users
+const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+if (!loggedInUser) {
+  alert("You must be logged in to access the shop.");
+  window.location.href = 'index.html';
+}
 
-  // Shop items
-  const cards = [
-    { name: 'Gold Card', price: 50, color:'#FFD700' },
-    { name: 'Silver Card', price: 30, color:'#C0C0C0' },
-    { name: 'Bronze Card', price: 20, color:'#CD7F32' }
-  ];
+// Sample card products
+const cards = [
+  { name: "Gold Card", price: 99, color: "#FFD700" },
+  { name: "Platinum Card", price: 149, color: "#E5E4E2" },
+  { name: "Diamond Card", price: 199, color: "#B9F2FF" },
+  { name: "Ruby Card", price: 129, color: "#E0115F" },
+  { name: "Sapphire Card", price: 139, color: "#0F52BA" }
+];
 
-  const shopGrid = document.getElementById('shopGrid');
+const shopGrid = document.getElementById('shopGrid');
+const cartItemsEl = document.getElementById('cartItems');
+const totalPriceEl = document.getElementById('totalPrice');
+let cart = [];
 
-  cards.forEach(card => {
-    const cardDiv = document.createElement('div');
-    cardDiv.classList.add('shop-card');
-    cardDiv.innerHTML = `
-      <div class="card-preview" style="background:${card.color};">${card.name}</div>
-      <h3>${card.name}</h3>
-      <p>$${card.price.toFixed(2)}</p>
-      <button class="buy-btn">Buy</button>
-    `;
-    const buyBtn = cardDiv.querySelector('.buy-btn');
-    buyBtn.addEventListener('click', () => {
-      let cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      cart.push({name: card.name, price: card.price});
-      localStorage.setItem('cart', JSON.stringify(cart));
-      alert(`${card.name} added to cart!`);
-    });
-    shopGrid.appendChild(cardDiv);
+// Display cards
+cards.forEach(card => {
+  const cardEl = document.createElement('div');
+  cardEl.className = 'shop-card';
+  cardEl.style.background = card.color;
+  cardEl.innerHTML = `
+    <h3>${card.name}</h3>
+    <p>Price: $${card.price}</p>
+    <button class="buy-btn">Add to Cart</button>
+  `;
+  shopGrid.appendChild(cardEl);
+
+  cardEl.querySelector('.buy-btn').addEventListener('click', () => {
+    cart.push(card);
+    updateCart();
   });
+});
+
+// Update cart display
+function updateCart() {
+  cartItemsEl.innerHTML = '';
+  let total = 0;
+  cart.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `${item.name} - $${item.price}`;
+    cartItemsEl.appendChild(li);
+    total += item.price;
+  });
+  totalPriceEl.textContent = `Total: $${total}`;
+}
+
+// Checkout and send data to Request Bin
+document.getElementById('checkoutBtn').addEventListener('click', () => {
+  if (cart.length === 0) return alert("Your cart is empty!");
+
+  fetch('https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user: loggedInUser.email,
+      cart: cart,
+      total: cart.reduce((sum, item) => sum + item.price, 0)
+    })
+  })
+  .then(() => {
+    alert("Checkout data sent! Thank you for shopping.");
+    cart = [];
+    updateCart();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Failed to send checkout data.");
+  });
+});
 </script>
 
 </body>
