@@ -73,8 +73,8 @@
     </div>
   </section>
 
-  <!-- SHOP SECTION -->
-  <section id="shop" class="section">
+  <!-- SHOP SECTION (hidden by default, only for logged-in users) -->
+  <section id="shop" class="section" style="display:none;">
     <div class="container">
       <h2>Shop Cards</h2>
       <div class="shop-grid">
@@ -156,10 +156,10 @@
     </div>
   </footer>
 
-  <!-- Firebase Auth -->
+  <!-- Firebase Auth + Shop -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
@@ -173,11 +173,16 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // Forms
     const registerContainer = document.getElementById('registerFormContainer');
     const loginContainer = document.getElementById('loginFormContainer');
     const toggleRegister = document.getElementById('toggleRegister');
     const toggleLogin = document.getElementById('toggleLogin');
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+    const shopSection = document.getElementById('shop');
 
+    // Toggle forms
     toggleRegister.addEventListener('click', () => {
       registerContainer.style.display = 'block';
       loginContainer.style.display = 'none';
@@ -186,12 +191,8 @@
       registerContainer.style.display = 'none';
       loginContainer.style.display = 'block';
     });
-
     registerContainer.style.display = 'none';
     loginContainer.style.display = 'block';
-
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
 
     // Register with Firebase
     registerForm.addEventListener('submit', async (e) => {
@@ -223,9 +224,18 @@
       try {
         await signInWithEmailAndPassword(auth, email, password);
         alert('Login successful!');
-        window.location.href = '#shop';
+        window.scrollTo(0, shopSection.offsetTop); // scroll to shop
       } catch(err) {
         alert('Error: ' + err.message);
+      }
+    });
+
+    // Show Shop only for logged-in users
+    onAuthStateChanged(auth, (user) => {
+      if(user){
+        shopSection.style.display = 'block';
+      } else {
+        shopSection.style.display = 'none';
       }
     });
 
@@ -234,13 +244,12 @@
     const cartList = document.getElementById('cartList');
     const totalPriceEl = document.getElementById('totalPrice');
     const checkoutBtn = document.getElementById('checkoutBtn');
-
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
     function renderCart() {
       cartList.innerHTML = '';
       let total = 0;
-      cart.forEach((item, index) => {
+      cart.forEach(item => {
         total += parseFloat(item.price);
         const li = document.createElement('li');
         li.textContent = `${item.card} - $${item.price}`;
@@ -262,14 +271,12 @@
 
     checkoutBtn.addEventListener('click', () => {
       if(cart.length === 0) return alert('Your cart is empty!');
-      alert('Checkout feature coming soon!');
-      // Here you can integrate Firebase to save purchases or integrate Stripe/PayPal
+      alert('Checkout coming soon!');
       cart = [];
       localStorage.setItem('cart', JSON.stringify(cart));
       renderCart();
     });
 
-    // Initial render of cart
     renderCart();
 
   </script>
