@@ -5,31 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css" />
-  <meta name="description" content="Bad Pickney6 is a creative platform designed to bring modern, clean, and responsive experiences to your fingertips and your pockets lol have fun." />
-  <meta name="keywords" content="cards, cards development, card marketing, SEO, Bad Pickney6" />
-  <meta name="author" content="Bad Pickney6" />
+  <meta name="description" content="Bad Pickney6 - your modern card platform." />
   <link rel="icon" href="assets/images/favicon.ico" />
 </head>
 <body>
-
   <!-- HEADER -->
   <header>
-    <div class="container">
+    <div class="container header-flex">
       <div class="logo">
         <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
         <h1>Bad Pickney6</h1>
       </div>
       <nav>
-        <ul>
+        <ul id="navLinks">
           <li><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#services">Services</a></li>
-          <li><a href="#shop">Shop</a></li>
           <li><a href="#contact">Contact</a></li>
-          <li id="greeting" style="display:none;">Hello, <span id="userName"></span></li>
-          <li><button id="logoutBtn" style="display:none;">Logout</button></li>
+          <li><a href="shop.html" id="shopLink">Shop</a></li>
         </ul>
       </nav>
+      <div id="authButtons">
+        <button id="loginBtn">Login</button>
+        <button id="registerBtn">Register</button>
+        <button id="logoutBtn" style="display:none;">Logout</button>
+      </div>
     </div>
   </header>
 
@@ -46,11 +46,7 @@
   <section id="about" class="section">
     <div class="container">
       <h2>About Bad Pickney6</h2>
-      <p>
-        Bad Pickney6 is a platform designed to bring modern, clean, and
-        responsive experiences to your fingertips and pockets. We focus on making your
-        pockets look great and perform better.
-      </p>
+      <p>Bad Pickney6 brings modern, clean, and responsive card experiences to your fingertips and pockets.</p>
     </div>
   </section>
 
@@ -65,47 +61,12 @@
         </div>
         <div class="service">
           <h3>Development</h3>
-          <p>Custom cards and cashout for your web and mobile apps.</p>
+          <p>Custom card designs and integrations for your web and mobile apps.</p>
         </div>
         <div class="service">
           <h3>SEO & Marketing</h3>
-          <p>Boost your online presence with a DM now.</p>
+          <p>Boost your online presence and brand awareness with our services.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SHOP SECTION (hidden unless logged in) -->
-  <section id="shop" class="section" style="display:none;">
-    <div class="container">
-      <h2>Shop Cards</h2>
-      <div class="shop-grid">
-        <div class="shop-card">
-          <img src="assets/images/card1.png" alt="Gold Card">
-          <h3>Gold Card</h3>
-          <p>Price: $49.99</p>
-          <button class="buy-btn" data-card="Gold Card" data-price="49.99">Buy Now</button>
-        </div>
-        <div class="shop-card">
-          <img src="assets/images/card2.png" alt="Platinum Card">
-          <h3>Platinum Card</h3>
-          <p>Price: $99.99</p>
-          <button class="buy-btn" data-card="Platinum Card" data-price="99.99">Buy Now</button>
-        </div>
-        <div class="shop-card">
-          <img src="assets/images/card3.png" alt="Diamond Card">
-          <h3>Diamond Card</h3>
-          <p>Price: $199.99</p>
-          <button class="buy-btn" data-card="Diamond Card" data-price="199.99">Buy Now</button>
-        </div>
-      </div>
-
-      <!-- Cart -->
-      <div id="cartContainer" style="margin-top:20px;">
-        <h3>Your Cart</h3>
-        <ul id="cartList"></ul>
-        <p id="totalPrice">Total: $0.00</p>
-        <button id="checkoutBtn">Checkout</button>
       </div>
     </div>
   </section>
@@ -123,45 +84,16 @@
     </div>
   </section>
 
-  <!-- AUTH (LOGIN/REGISTER) -->
-  <section id="auth" class="section">
-    <div class="container">
-      <h2>Register or Login</h2>
-      <div class="auth-toggle">
-        <button id="toggleRegister">Register</button>
-        <button id="toggleLogin">Login</button>
-      </div>
-
-      <div id="registerFormContainer" class="auth-form">
-        <form id="registerForm">
-          <input type="text" name="name" placeholder="Your Name" required>
-          <input type="email" name="email" placeholder="Your Email" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
-          <button type="submit">Register</button>
-        </form>
-      </div>
-
-      <div id="loginFormContainer" class="auth-form">
-        <form id="loginForm">
-          <input type="email" name="email" placeholder="Your Email" required>
-          <input type="password" name="password" placeholder="Password" required>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
   <footer>
     <div class="container">
       <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
     </div>
   </footer>
 
-  <!-- Firebase Auth + Shop -->
+  <!-- FIREBASE AUTH -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
@@ -175,126 +107,34 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const registerContainer = document.getElementById('registerFormContainer');
-    const loginContainer = document.getElementById('loginFormContainer');
-    const toggleRegister = document.getElementById('toggleRegister');
-    const toggleLogin = document.getElementById('toggleLogin');
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
-    const shopSection = document.getElementById('shop');
-    const greeting = document.getElementById('greeting');
-    const userNameEl = document.getElementById('userName');
-    const logoutBtn = document.getElementById('logoutBtn');
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const shopLink = document.getElementById("shopLink");
 
-    // Toggle forms
-    toggleRegister.addEventListener('click', () => {
-      registerContainer.style.display = 'block';
-      loginContainer.style.display = 'none';
-    });
-    toggleLogin.addEventListener('click', () => {
-      registerContainer.style.display = 'none';
-      loginContainer.style.display = 'block';
-    });
-    registerContainer.style.display = 'none';
-    loginContainer.style.display = 'block';
-
-    // Register
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = registerForm.name.value.trim();
-      const email = registerForm.email.value.trim();
-      const password = registerForm.password.value;
-      const confirmPassword = registerForm.confirmPassword.value;
-
-      if(password !== confirmPassword) return alert('Passwords do not match!');
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, { displayName: name });
-        alert('Registration successful! You can now login.');
-        registerForm.reset();
-        toggleLogin.click();
-      } catch(err) {
-        alert('Error: ' + err.message);
-      }
-    });
-
-    // Login
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = loginForm.email.value.trim();
-      const password = loginForm.password.value;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        alert('Login successful!');
-        window.scrollTo(0, shopSection.offsetTop); // scroll to shop
-      } catch(err) {
-        alert('Error: ' + err.message);
-      }
-    });
-
-    // Show shop & greeting only for logged-in users
     onAuthStateChanged(auth, (user) => {
-      if(user){
-        shopSection.style.display = 'block';
-        greeting.style.display = 'inline';
-        userNameEl.textContent = user.displayName || user.email;
-        logoutBtn.style.display = 'inline';
+      if (user) {
+        // Logged in
+        loginBtn.style.display = "none";
+        registerBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+        shopLink.style.display = "inline-block";
       } else {
-        shopSection.style.display = 'none';
-        greeting.style.display = 'none';
-        logoutBtn.style.display = 'none';
+        // Logged out
+        loginBtn.style.display = "inline-block";
+        registerBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+        shopLink.style.display = "none";
       }
     });
 
-    // Logout
-    logoutBtn.addEventListener('click', () => {
-      signOut(auth).then(() => {
-        alert('Logged out successfully!');
-      });
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      alert("Logged out successfully!");
     });
 
-    // Shop cart
-    const buyButtons = document.querySelectorAll('.buy-btn');
-    const cartList = document.getElementById('cartList');
-    const totalPriceEl = document.getElementById('totalPrice');
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-    function renderCart() {
-      cartList.innerHTML = '';
-      let total = 0;
-      cart.forEach(item => {
-        total += parseFloat(item.price);
-        const li = document.createElement('li');
-        li.textContent = `${item.card} - $${item.price}`;
-        cartList.appendChild(li);
-      });
-      totalPriceEl.textContent = `Total: $${total.toFixed(2)}`;
-    }
-
-    buyButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card = btn.dataset.card;
-        const price = btn.dataset.price;
-        cart.push({ card, price });
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
-        alert(`${card} added to cart!`);
-      });
-    });
-
-    checkoutBtn.addEventListener('click', () => {
-      if(cart.length === 0) return alert('Your cart is empty!');
-      alert('Checkout coming soon!');
-      cart = [];
-      localStorage.setItem('cart', JSON.stringify(cart));
-      renderCart();
-    });
-
-    renderCart();
+    loginBtn.addEventListener("click", () => window.location.href = "login.html");
+    registerBtn.addEventListener("click", () => window.location.href = "register.html");
   </script>
-
 </body>
 </html>
