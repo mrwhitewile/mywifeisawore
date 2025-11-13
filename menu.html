@@ -15,21 +15,36 @@
   </header>
 
   <main class="container">
-    <h2>Welcome, <span id="userName">User</span>!</h2>
-    <p>Your email: <span id="userEmail"></span></p>
+    <!-- User Info -->
+    <section id="userInfo">
+      <h2>Welcome, <span id="userName">User</span>!</h2>
+      <p>Email: <span id="userEmail"></span></p>
+    </section>
 
+    <!-- Blog Post Submission -->
+    <section id="createPost">
+      <h3>Create New Blog Post</h3>
+      <form id="blogPostForm">
+        <input type="text" name="title" placeholder="Post Title" required>
+        <textarea name="content" placeholder="Post Content" rows="5" required></textarea>
+        <button type="submit">Publish</button>
+      </form>
+    </section>
+
+    <!-- Display Latest Blog Posts -->
     <section id="userBlogPosts">
       <h3>Your Latest Blog Posts</h3>
       <div id="blogPostsContainer" class="blog-grid"></div>
     </section>
   </main>
 
+  <!-- Firebase Integration -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getFirestore, collection, query, where, orderBy, limit, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Firebase config (same as index.html)
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AlzaSyCjpnHjSRwakJPHGhvZacx7RCruNbtpUd4",
       authDomain: "whitewile.firebaseapp.com",
@@ -39,6 +54,7 @@
       appId: "YOUR_APP_ID"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -47,11 +63,11 @@
     const userEmailEl = document.getElementById('userEmail');
     const blogContainer = document.getElementById('blogPostsContainer');
     const logoutBtn = document.getElementById('logoutBtn');
+    const blogPostForm = document.getElementById('blogPostForm');
 
-    // Listen for auth state
+    // Check auth state
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        // Not logged in, redirect to index.html
         window.location.href = 'index.html';
         return;
       }
@@ -60,7 +76,7 @@
       userNameEl.textContent = user.displayName || "User";
       userEmailEl.textContent = user.email;
 
-      // Fetch latest 3 blog posts created by this user
+      // Fetch latest 3 blog posts for this user
       try {
         const q = query(
           collection(db, "blogPosts"),
@@ -81,7 +97,7 @@
           return `
             <div class="blog-post">
               <h4>${p.title}</h4>
-              <p class="blog-date">${new Date(p.date.toDate()).toLocaleDateString()}</p>
+              <p class="blog-date">${p.date?.toDate ? new Date(p.date.toDate()).toLocaleDateString() : ""}</p>
               <p>${p.content.length > 150 ? p.content.substring(0,150) + '...' : p.content}</p>
             </div>
           `;
@@ -96,6 +112,44 @@
     logoutBtn.addEventListener('click', async () => {
       await signOut(auth);
       window.location.href = 'index.html';
+    });
+
+    // Blog Post Submission
+    blogPostForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+
+      if (!user) {
+        alert("You must be logged in to post.");
+        return;
+      }
+
+      const title = blogPostForm.title.value.trim();
+      const content = blogPostForm.content.value.trim();
+
+      if (!title || !content) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "blogPosts"), {
+          title: title,
+          content: content,
+          authorEmail: user.email,
+          authorName: user.displayName || "User",
+          date: serverTimestamp()
+        });
+
+        alert("Blog post published successfully!");
+        blogPostForm.reset();
+
+        // Reload posts to include the new one
+        location.reload();
+      } catch (err) {
+        console.error(err);
+        alert("Error publishing post: " + err.message);
+      }
     });
   </script>
 </body>
