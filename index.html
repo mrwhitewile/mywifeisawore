@@ -167,64 +167,11 @@
     });
   </script>
 
-  <!-- ADMIN BUTTON -->
-  <button id="adminBtn" style="
-    display:none;
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    z-index:9999;
-    padding:12px 18px;
-    background:#ff6f61;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    font-weight:bold;
-    cursor:pointer;
-    box-shadow:0 2px 6px rgba(0,0,0,0.3);
-  ">
-    Admin
-  </button>
-
-  <script>
-    const adminBtn = document.getElementById('adminBtn');
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-        adminBtn.style.display = 'block';
-      }
-    });
-    adminBtn.addEventListener('click', () => {
-      window.open('admin.html', '_blank');
-    });
-  </script>
-
-  <!-- BLOG POSTS LOCAL DISPLAY (fallback) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const blogContainer = document.getElementById('blogPostsContainer');
-      const posts = JSON.parse(localStorage.getItem('blogPosts') || '[]')
-        .sort((a,b)=> new Date(b.date) - new Date(a.date));
-
-      if (!posts.length) {
-        blogContainer.innerHTML = '<p>No blog posts yet — check back soon.</p>';
-        return;
-      }
-
-      blogContainer.innerHTML = posts.slice(0, 3).map(p => `
-        <div class="blog-post">
-          <h3>${p.title}</h3>
-          <p class="blog-date">${new Date(p.date).toLocaleDateString()}</p>
-          <p>${p.content.length > 150 ? p.content.substring(0,150) + '...' : p.content}</p>
-        </div>
-      `).join('');
-    });
-  </script>
-
   <!-- FIREBASE INTEGRATION -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AlzaSyCjpnHjSRwakJPHGhvZacx7RCruNbtpUd4",
@@ -243,18 +190,22 @@
     const registerForm = document.getElementById('registerForm');
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = registerForm.email.value;
+      const name = registerForm.name.value.trim();
+      const email = registerForm.email.value.trim();
       const password = registerForm.password.value;
       const confirmPassword = registerForm.confirmPassword.value;
+
       if(password !== confirmPassword) return alert("Passwords do not match!");
 
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        // Save displayName
+        await updateProfile(userCredential.user, { displayName: name });
         alert("Registration successful! You can now login.");
         registerForm.reset();
         document.getElementById('toggleLogin').click();
-      } catch (error) {
-        alert("Error: " + error.message);
+      } catch (err) {
+        alert("Error: " + err.message);
       }
     });
 
@@ -262,38 +213,39 @@
     const loginForm = document.getElementById('loginForm');
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = loginForm.email.value;
+      const email = loginForm.email.value.trim();
       const password = loginForm.password.value;
+
       try {
         await signInWithEmailAndPassword(auth, email, password);
         alert("Login successful!");
         window.location.href = "menu.html";
-      } catch (error) {
-        alert("Error: " + error.message);
+      } catch (err) {
+        alert("Error: " + err.message);
       }
     });
 
-    // FETCH LATEST 3 BLOG POSTS FROM FIRESTORE
+    // BLOG POSTS DISPLAY (Optional: Firestore latest 3 posts)
     document.addEventListener('DOMContentLoaded', async () => {
       const blogContainer = document.getElementById('blogPostsContainer');
       try {
         const q = query(collection(db, "blogPosts"), orderBy("date", "desc"), limit(3));
         const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
+
+        if(querySnapshot.empty){
           blogContainer.innerHTML = "<p>No blog posts yet — check back soon.</p>";
           return;
         }
-        blogContainer.innerHTML = querySnapshot.docs.map(doc => {
+
+        blogContainer.innerHTML = querySnapshot.docs.map(doc=>{
           const p = doc.data();
-          return `
-            <div class="blog-post">
-              <h3>${p.title}</h3>
-              <p class="blog-date">${new Date(p.date.toDate()).toLocaleDateString()}</p>
-              <p>${p.content.length > 150 ? p.content.substring(0,150) + '...' : p.content}</p>
-            </div>
-          `;
+          return `<div class="blog-post">
+                    <h3>${p.title}</h3>
+                    <p class="blog-date">${p.date?.toDate ? new Date(p.date.toDate()).toLocaleDateString() : ""}</p>
+                    <p>${p.content.length > 150 ? p.content.substring(0,150)+'...' : p.content}</p>
+                  </div>`;
         }).join('');
-      } catch (err) {
+      } catch(err){
         console.error(err);
         blogContainer.innerHTML = "<p>Error loading blog posts.</p>";
       }
