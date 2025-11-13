@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Bad Pickney6 is a creative platform designed to bring modern, clean, and responsive experiences to your fingertips and your pockets lol have fun." />
+  <meta name="keywords" content="cards, cards development, card marketing, SEO, Bad Pickney6" />
+  <meta name="author" content="Bad Pickney6" />
+  <link rel="icon" href="assets/images/favicon.ico" />
 </head>
 <body>
 
@@ -118,7 +122,7 @@
     </div>
   </footer>
 
-  <!-- Firebase Auth JS -->
+  <!-- Firebase Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -135,7 +139,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Toggle forms
     const registerContainer = document.getElementById('registerFormContainer');
     const loginContainer = document.getElementById('loginFormContainer');
     const toggleRegister = document.getElementById('toggleRegister');
@@ -153,8 +156,10 @@
     registerContainer.style.display = 'none';
     loginContainer.style.display = 'block';
 
-    // Register
     const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+
+    // Register with Firebase
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = registerForm.name.value.trim();
@@ -162,7 +167,7 @@
       const password = registerForm.password.value;
       const confirmPassword = registerForm.confirmPassword.value;
 
-      if (password !== confirmPassword) return alert('Passwords do not match!');
+      if(password !== confirmPassword) return alert('Passwords do not match!');
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -170,13 +175,12 @@
         alert('Registration successful! You can now login.');
         registerForm.reset();
         toggleLogin.click();
-      } catch (err) {
+      } catch(err) {
         alert('Error: ' + err.message);
       }
     });
 
-    // Login
-    const loginForm = document.getElementById('loginForm');
+    // Login with Firebase
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = loginForm.email.value.trim();
@@ -186,7 +190,7 @@
         await signInWithEmailAndPassword(auth, email, password);
         alert('Login successful!');
         window.location.href = 'menu.html';
-      } catch (err) {
+      } catch(err) {
         alert('Error: ' + err.message);
       }
     });
