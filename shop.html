@@ -18,8 +18,7 @@
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="#shop">Shop</a></li>
-        <li><a href="#cart">Cart</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="checkout.html">Checkout</a></li>
       </ul>
     </nav>
   </div>
@@ -32,17 +31,6 @@
   </div>
 </section>
 
-<section id="cart" class="section">
-  <div class="container">
-    <h2>Your Cart</h2>
-    <div id="cartContainer">
-      <ul id="cartItems"></ul>
-      <p id="totalPrice">Total: $0</p>
-      <button id="checkoutBtn">Checkout</button>
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="container">
     <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
@@ -50,7 +38,7 @@
 </footer>
 
 <script>
-// Only allow logged-in users
+// Only logged-in users
 const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 if (!loggedInUser) {
   alert("You must be logged in to access the shop.");
@@ -67,9 +55,7 @@ const cards = [
 ];
 
 const shopGrid = document.getElementById('shopGrid');
-const cartItemsEl = document.getElementById('cartItems');
-const totalPriceEl = document.getElementById('totalPrice');
-let cart = [];
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
 // Display cards
 cards.forEach(card => {
@@ -85,44 +71,8 @@ cards.forEach(card => {
 
   cardEl.querySelector('.buy-btn').addEventListener('click', () => {
     cart.push(card);
-    updateCart();
-  });
-});
-
-// Update cart display
-function updateCart() {
-  cartItemsEl.innerHTML = '';
-  let total = 0;
-  cart.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = `${item.name} - $${item.price}`;
-    cartItemsEl.appendChild(li);
-    total += item.price;
-  });
-  totalPriceEl.textContent = `Total: $${total}`;
-}
-
-// Checkout and send data to Request Bin
-document.getElementById('checkoutBtn').addEventListener('click', () => {
-  if (cart.length === 0) return alert("Your cart is empty!");
-
-  fetch('https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user: loggedInUser.email,
-      cart: cart,
-      total: cart.reduce((sum, item) => sum + item.price, 0)
-    })
-  })
-  .then(() => {
-    alert("Checkout data sent! Thank you for shopping.");
-    cart = [];
-    updateCart();
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Failed to send checkout data.");
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${card.name} added to cart!`);
   });
 });
 </script>
