@@ -1,156 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bad Pickney6 Menu</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bad Pickney6 Menu</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>Bad Pickney6 Menu</h1>
-      <button id="logoutBtn">Logout</button>
-    </div>
-  </header>
 
-  <main class="container">
-    <!-- User Info -->
-    <section id="userInfo">
-      <h2>Welcome, <span id="userName">User</span>!</h2>
-      <p>Email: <span id="userEmail"></span></p>
-    </section>
+<header>
+  <div class="container">
+    <h1>Bad Pickney6 Menu</h1>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</header>
 
-    <!-- Blog Post Submission -->
-    <section id="createPost">
-      <h3>Create New Blog Post</h3>
-      <form id="blogPostForm">
-        <input type="text" name="title" placeholder="Post Title" required>
-        <textarea name="content" placeholder="Post Content" rows="5" required></textarea>
-        <button type="submit">Publish</button>
-      </form>
-    </section>
+<main class="container">
+  <section id="userInfo">
+    <h2>Welcome, <span id="userName">User</span>!</h2>
+    <p>Email: <span id="userEmail"></span></p>
+  </section>
 
-    <!-- Display Latest Blog Posts -->
-    <section id="userBlogPosts">
-      <h3>Your Latest Blog Posts</h3>
-      <div id="blogPostsContainer" class="blog-grid"></div>
-    </section>
-  </main>
+  <section id="createPost">
+    <h3>Create New Blog Post</h3>
+    <form id="blogPostForm">
+      <input type="text" name="title" placeholder="Post Title" required>
+      <textarea name="content" placeholder="Post Content" rows="5" required></textarea>
+      <button type="submit">Publish</button>
+    </form>
+  </section>
 
-  <!-- Firebase Integration -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, query, where, orderBy, limit, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <section id="userBlogPosts">
+    <h3>Your Latest Blog Posts</h3>
+    <div id="blogPostsContainer" class="blog-grid"></div>
+  </section>
+</main>
 
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AlzaSyCjpnHjSRwakJPHGhvZacx7RCruNbtpUd4",
-      authDomain: "whitewile.firebaseapp.com",
-      projectId: "whitewile",
-      storageBucket: "whitewile.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, where, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+    authDomain: "badute-5064d.firebaseapp.com",
+    projectId: "badute-594d",
+    storageBucket: "badute-5964d.appspot.com",
+    messagingSenderId: "432684410038",
+    appId: "7cf74922a7fe726ef32e17"
+  };
 
-    const userNameEl = document.getElementById('userName');
-    const userEmailEl = document.getElementById('userEmail');
-    const blogContainer = document.getElementById('blogPostsContainer');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const blogPostForm = document.getElementById('blogPostForm');
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // Check auth state
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = 'index.html';
+  const userNameEl = document.getElementById('userName');
+  const userEmailEl = document.getElementById('userEmail');
+  const blogContainer = document.getElementById('blogPostsContainer');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const blogPostForm = document.getElementById('blogPostForm');
+
+  onAuthStateChanged(auth, async (user) => {
+    if(!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    userNameEl.textContent = user.displayName || "User";
+    userEmailEl.textContent = user.email;
+
+    // Fetch latest 3 blog posts
+    try {
+      const q = query(collection(db, "blogPosts"), where("authorEmail", "==", user.email), orderBy("date", "desc"), limit(3));
+      const snapshot = await getDocs(q);
+
+      if(snapshot.empty){
+        blogContainer.innerHTML = "<p>No blog posts yet.</p>";
         return;
       }
 
-      // Display user info
-      userNameEl.textContent = user.displayName || "User";
-      userEmailEl.textContent = user.email;
+      blogContainer.innerHTML = snapshot.docs.map(doc => {
+        const p = doc.data();
+        return `<div class="blog-post">
+                  <h4>${p.title}</h4>
+                  <p>${p.date?.toDate ? new Date(p.date.toDate()).toLocaleDateString() : ""}</p>
+                  <p>${p.content.length>150 ? p.content.substring(0,150)+"..." : p.content}</p>
+                </div>`;
+      }).join('');
 
-      // Fetch latest 3 blog posts for this user
-      try {
-        const q = query(
-          collection(db, "blogPosts"),
-          where("authorEmail", "==", user.email),
-          orderBy("date", "desc"),
-          limit(3)
-        );
+    } catch(err) {
+      console.error(err);
+      blogContainer.innerHTML = "<p>Error loading blog posts.</p>";
+    }
+  });
 
-        const querySnapshot = await getDocs(q);
+  logoutBtn.addEventListener('click', async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
 
-        if (querySnapshot.empty) {
-          blogContainer.innerHTML = "<p>No blog posts yet.</p>";
-          return;
-        }
+  blogPostForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if(!user) return alert("You must be logged in to post.");
 
-        blogContainer.innerHTML = querySnapshot.docs.map(doc => {
-          const p = doc.data();
-          return `
-            <div class="blog-post">
-              <h4>${p.title}</h4>
-              <p class="blog-date">${p.date?.toDate ? new Date(p.date.toDate()).toLocaleDateString() : ""}</p>
-              <p>${p.content.length > 150 ? p.content.substring(0,150) + '...' : p.content}</p>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error(err);
-        blogContainer.innerHTML = "<p>Error loading blog posts.</p>";
-      }
-    });
+    const title = blogPostForm.title.value.trim();
+    const content = blogPostForm.content.value.trim();
+    if(!title || !content) return alert("Please fill in all fields.");
 
-    // Logout
-    logoutBtn.addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.href = 'index.html';
-    });
+    try {
+      await addDoc(collection(db, "blogPosts"), {
+        title, content,
+        authorEmail: user.email,
+        authorName: user.displayName || "User",
+        date: serverTimestamp()
+      });
 
-    // Blog Post Submission
-    blogPostForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const user = auth.currentUser;
+      alert("Blog post published!");
+      blogPostForm.reset();
+      location.reload();
+    } catch(err) {
+      console.error(err);
+      alert("Error publishing post: " + err.message);
+    }
+  });
+</script>
 
-      if (!user) {
-        alert("You must be logged in to post.");
-        return;
-      }
-
-      const title = blogPostForm.title.value.trim();
-      const content = blogPostForm.content.value.trim();
-
-      if (!title || !content) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      try {
-        await addDoc(collection(db, "blogPosts"), {
-          title: title,
-          content: content,
-          authorEmail: user.email,
-          authorName: user.displayName || "User",
-          date: serverTimestamp()
-        });
-
-        alert("Blog post published successfully!");
-        blogPostForm.reset();
-
-        // Reload posts to include the new one
-        location.reload();
-      } catch (err) {
-        console.error(err);
-        alert("Error publishing post: " + err.message);
-      }
-    });
-  </script>
 </body>
 </html>
