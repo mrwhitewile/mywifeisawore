@@ -26,6 +26,8 @@
           <li><a href="#services">Services</a></li>
           <li><a href="#shop">Shop</a></li>
           <li><a href="#contact">Contact</a></li>
+          <li id="greeting" style="display:none;">Hello, <span id="userName"></span></li>
+          <li><button id="logoutBtn" style="display:none;">Logout</button></li>
         </ul>
       </nav>
     </div>
@@ -73,7 +75,7 @@
     </div>
   </section>
 
-  <!-- SHOP SECTION (hidden by default, only for logged-in users) -->
+  <!-- SHOP SECTION (hidden unless logged in) -->
   <section id="shop" class="section" style="display:none;">
     <div class="container">
       <h2>Shop Cards</h2>
@@ -98,7 +100,7 @@
         </div>
       </div>
 
-      <!-- Cart display -->
+      <!-- Cart -->
       <div id="cartContainer" style="margin-top:20px;">
         <h3>Your Cart</h3>
         <ul id="cartList"></ul>
@@ -159,7 +161,7 @@
   <!-- Firebase Auth + Shop -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
@@ -173,7 +175,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Forms
     const registerContainer = document.getElementById('registerFormContainer');
     const loginContainer = document.getElementById('loginFormContainer');
     const toggleRegister = document.getElementById('toggleRegister');
@@ -181,6 +182,9 @@
     const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
     const shopSection = document.getElementById('shop');
+    const greeting = document.getElementById('greeting');
+    const userNameEl = document.getElementById('userName');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     // Toggle forms
     toggleRegister.addEventListener('click', () => {
@@ -194,7 +198,7 @@
     registerContainer.style.display = 'none';
     loginContainer.style.display = 'block';
 
-    // Register with Firebase
+    // Register
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = registerForm.name.value.trim();
@@ -215,14 +219,14 @@
       }
     });
 
-    // Login with Firebase
+    // Login
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = loginForm.email.value.trim();
       const password = loginForm.password.value;
 
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         alert('Login successful!');
         window.scrollTo(0, shopSection.offsetTop); // scroll to shop
       } catch(err) {
@@ -230,16 +234,28 @@
       }
     });
 
-    // Show Shop only for logged-in users
+    // Show shop & greeting only for logged-in users
     onAuthStateChanged(auth, (user) => {
       if(user){
         shopSection.style.display = 'block';
+        greeting.style.display = 'inline';
+        userNameEl.textContent = user.displayName || user.email;
+        logoutBtn.style.display = 'inline';
       } else {
         shopSection.style.display = 'none';
+        greeting.style.display = 'none';
+        logoutBtn.style.display = 'none';
       }
     });
 
-    // Shop Cart functionality
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        alert('Logged out successfully!');
+      });
+    });
+
+    // Shop cart
     const buyButtons = document.querySelectorAll('.buy-btn');
     const cartList = document.getElementById('cartList');
     const totalPriceEl = document.getElementById('totalPrice');
@@ -278,7 +294,6 @@
     });
 
     renderCart();
-
   </script>
 
 </body>
