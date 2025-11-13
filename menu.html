@@ -3,183 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Menu — Bad Pickney6</title>
+  <title>Bad Pickney6 Menu</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #222;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    header button {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      padding: 8px 12px;
-      border: none;
-      background-color: #ff6f61;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    header button:hover {
-      background-color: #e65b50;
-    }
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .menu-item {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      padding: 15px;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .menu-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    }
-    .menu-item img {
-      width: 100px;
-      margin-bottom: 10px;
-    }
-    .menu-item h3 {
-      margin: 10px 0 5px;
-    }
-    .menu-item p {
-      margin: 5px 0 10px;
-    }
-    .menu-item input {
-      width: 60px;
-      padding: 5px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
-    .menu-item button {
-      padding: 8px 12px;
-      border: none;
-      background-color: #ff6f61;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .menu-item button:hover {
-      background-color: #e65b50;
-    }
-    .cart-section {
-      padding: 20px;
-      background: #fff;
-      margin: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .cart-section ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    .cart-section a {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #222;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 6px;
-    }
-    .cart-section a:hover {
-      background-color: #444;
-    }
-  </style>
 </head>
 <body>
+  <header>
+    <div class="container">
+      <h1>Bad Pickney6 Menu</h1>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </header>
 
-<header>
-  <h1>Welcome, <span id="userName"></span>!</h1>
-  <button id="logoutBtn">Logout</button>
-</header>
+  <main class="container">
+    <h2>Welcome, <span id="userName">User</span>!</h2>
+    <p>Your email: <span id="userEmail"></span></p>
 
-<section class="menu-grid">
-  <div class="menu-item">
-    <img src="assets/images/gold-card.png" alt="Gold Card">
-    <h3>Gold Card</h3>
-    <p>$99.99</p>
-    <input type="number" min="1" value="1" id="goldQty">
-    <button onclick="addToCart('Gold Card', 99.99, Number(document.getElementById('goldQty').value))">Add to Cart</button>
-  </div>
+    <section id="userBlogPosts">
+      <h3>Your Latest Blog Posts</h3>
+      <div id="blogPostsContainer" class="blog-grid"></div>
+    </section>
+  </main>
 
-  <div class="menu-item">
-    <img src="assets/images/silver-card.png" alt="Silver Card">
-    <h3>Silver Card</h3>
-    <p>$49.99</p>
-    <input type="number" min="1" value="1" id="silverQty">
-    <button onclick="addToCart('Silver Card', 49.99, Number(document.getElementById('silverQty').value))">Add to Cart</button>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs, where } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  <div class="menu-item">
-    <img src="assets/images/bronze-card.png" alt="Bronze Card">
-    <h3>Bronze Card</h3>
-    <p>$29.99</p>
-    <input type="number" min="1" value="1" id="bronzeQty">
-    <button onclick="addToCart('Bronze Card', 29.99, Number(document.getElementById('bronzeQty').value))">Add to Cart</button>
-  </div>
+    // Firebase config (same as index.html)
+    const firebaseConfig = {
+      apiKey: "AlzaSyCjpnHjSRwakJPHGhvZacx7RCruNbtpUd4",
+      authDomain: "whitewile.firebaseapp.com",
+      projectId: "whitewile",
+      storageBucket: "whitewile.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-  <div class="menu-item">
-    <img src="assets/images/platinum-card.png" alt="Platinum Card">
-    <h3>Platinum Card</h3>
-    <p>$149.99</p>
-    <input type="number" min="1" value="1" id="platinumQty">
-    <button onclick="addToCart('Platinum Card', 149.99, Number(document.getElementById('platinumQty').value))">Add to Cart</button>
-  </div>
-</section>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-<section class="cart-section">
-  <h2>Your Cart</h2>
-  <ul id="cart-items"></ul>
-  <p>Total: <span id="cart-total">$0.00</span></p>
-  <a href="checkout.html">Go to Checkout</a>
-</section>
+    const userNameEl = document.getElementById('userName');
+    const userEmailEl = document.getElementById('userEmail');
+    const blogContainer = document.getElementById('blogPostsContainer');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-<script src="cart.js"></script>
-<script>
-  // Display logged-in user
-  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser') || 'null');
-  if (!loggedInUser) {
-    alert('Please login first!');
-    window.location.href = 'index.html';
-  } else {
-    document.getElementById('userName').textContent = loggedInUser.name;
-  }
+    // Listen for auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Not logged in, redirect to index.html
+        window.location.href = 'index.html';
+        return;
+      }
 
-  // Logout button
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser');
-    window.location.href = 'index.html';
-  });
-</script>
+      // Display user info
+      userNameEl.textContent = user.displayName || "User";
+      userEmailEl.textContent = user.email;
 
+      // Fetch latest 3 blog posts created by this user
+      try {
+        const q = query(
+          collection(db, "blogPosts"),
+          where("authorEmail", "==", user.email),
+          orderBy("date", "desc"),
+          limit(3)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          blogContainer.innerHTML = "<p>No blog posts yet.</p>";
+          return;
+        }
+
+        blogContainer.innerHTML = querySnapshot.docs.map(doc => {
+          const p = doc.data();
+          return `
+            <div class="blog-post">
+              <h4>${p.title}</h4>
+              <p class="blog-date">${new Date(p.date.toDate()).toLocaleDateString()}</p>
+              <p>${p.content.length > 150 ? p.content.substring(0,150) + '...' : p.content}</p>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        blogContainer.innerHTML = "<p>Error loading blog posts.</p>";
+      }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    });
+  </script>
 </body>
 </html>
-
-
-
-
