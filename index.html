@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bad Pickney6</title>
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="container">
     <div class="logo">
@@ -20,7 +19,7 @@
         <li><a href="#home">Home</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
-        <li><a href="#shop">Shop</a></li>
+        <li><a href="shop.html">Shop</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -40,7 +39,7 @@
 <section id="about" class="section">
   <div class="container">
     <h2>About Bad Pickney6</h2>
-    <p>Bad Pickney6 is a platform designed to bring modern, clean, and responsive experiences to your fingertips and pockets.</p>
+    <p>We bring modern, clean, and responsive card experiences to your fingertips. Make your pockets look great!</p>
   </div>
 </section>
 
@@ -65,7 +64,20 @@
   </div>
 </section>
 
-<!-- AUTH (LOGIN/REGISTER) -->
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="container">
+    <h2>Contact Us</h2>
+    <form action="https://formspree.io/f/xgvregnq" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- AUTH -->
 <section id="auth" class="section">
   <div class="container">
     <h2>Register or Login</h2>
@@ -97,141 +109,85 @@
   </div>
 </section>
 
-<!-- SHOP SECTION -->
-<section id="shop" class="section">
-  <div class="container">
-    <h2>Shop Cards</h2>
-    <div class="shop-grid">
-      <div class="shop-card">
-        <div class="card-preview" style="background:#FFD700;">Gold Card</div>
-        <h3>Gold Card</h3>
-        <p>$50.00</p>
-        <button class="buy-btn" onclick="addToCart('Gold Card', 50)">Buy</button>
-      </div>
-      <div class="shop-card">
-        <div class="card-preview" style="background:#C0C0C0;">Silver Card</div>
-        <h3>Silver Card</h3>
-        <p>$30.00</p>
-        <button class="buy-btn" onclick="addToCart('Silver Card', 30)">Buy</button>
-      </div>
-      <div class="shop-card">
-        <div class="card-preview" style="background:#CD7F32;">Bronze Card</div>
-        <h3>Bronze Card</h3>
-        <p>$20.00</p>
-        <button class="buy-btn" onclick="addToCart('Bronze Card', 20)">Buy</button>
-      </div>
-    </div>
-    <div style="text-align:center; margin-top:30px;">
-      <a href="checkout.html" class="btn">Go to Checkout</a>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="section">
-  <div class="container">
-    <h2>Contact Us</h2>
-    <form action="https://formspree.io/f/xgvregnq" method="POST">
-      <input type="text" name="name" placeholder="Your Name" required />
-      <input type="email" name="email" placeholder="Your Email" required />
-      <textarea name="message" placeholder="Your Message" required></textarea>
-      <button type="submit">Send Message</button>
-    </form>
-  </div>
-</section>
-
 <footer>
   <div class="container">
     <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
   </div>
 </footer>
 
-<!-- ============================
-   SCRIPTS
-============================ -->
+<!-- AUTH JS -->
 <script>
-  // Toggle auth forms
-  const registerContainer = document.getElementById('registerFormContainer');
-  const loginContainer = document.getElementById('loginFormContainer');
-  const toggleRegister = document.getElementById('toggleRegister');
-  const toggleLogin = document.getElementById('toggleLogin');
+const registerContainer = document.getElementById('registerFormContainer');
+const loginContainer = document.getElementById('loginFormContainer');
+const toggleRegister = document.getElementById('toggleRegister');
+const toggleLogin = document.getElementById('toggleLogin');
 
-  toggleRegister.addEventListener('click', () => {
-    registerContainer.style.display = 'block';
-    loginContainer.style.display = 'none';
-  });
-  toggleLogin.addEventListener('click', () => {
-    registerContainer.style.display = 'none';
-    loginContainer.style.display = 'block';
-  });
-
+toggleRegister.addEventListener('click', () => {
+  registerContainer.style.display = 'block';
+  loginContainer.style.display = 'none';
+});
+toggleLogin.addEventListener('click', () => {
   registerContainer.style.display = 'none';
   loginContainer.style.display = 'block';
+});
 
-  // Password strength
-  const passwordInput = document.getElementById('password');
-  const strengthMeter = document.getElementById('passwordStrengthMeter');
+// Initialize
+registerContainer.style.display = 'none';
+loginContainer.style.display = 'block';
 
-  passwordInput.addEventListener('input', () => {
-    const val = passwordInput.value;
-    let strength = 0;
-    if(val.length>5) strength+=30;
-    if(/[A-Z]/.test(val)) strength+=30;
-    if(/[0-9]/.test(val)) strength+=20;
-    if(/[^A-Za-z0-9]/.test(val)) strength+=20;
-    strength=Math.min(strength,100);
-    strengthMeter.style.width = strength+'%';
-    strengthMeter.style.height = '10px';
-    strengthMeter.style.background = strength<50?'red':strength<80?'orange':'green';
-  });
+// Password strength
+const passwordInput = document.getElementById('password');
+const strengthMeter = document.getElementById('passwordStrengthMeter');
+passwordInput.addEventListener('input', () => {
+  const val = passwordInput.value;
+  let strength = 0;
+  if (val.length > 5) strength += 30;
+  if (/[A-Z]/.test(val)) strength += 30;
+  if (/[0-9]/.test(val)) strength += 20;
+  if (/[^A-Za-z0-9]/.test(val)) strength += 20;
+  strength = Math.min(strength, 100);
+  strengthMeter.style.width = strength + '%';
+  strengthMeter.style.height = '10px';
+  strengthMeter.style.background = strength < 50 ? 'red' : strength < 80 ? 'orange' : 'green';
+});
 
-  // REGISTER
-  const registerForm = document.getElementById('registerForm');
-  registerForm.addEventListener('submit',(e)=>{
-    e.preventDefault();
-    const name = registerForm.name.value.trim();
-    const email = registerForm.email.value.trim();
-    const password = registerForm.password.value;
-    const confirmPassword = registerForm.confirmPassword.value;
-    if(password!==confirmPassword) return alert('Passwords do not match!');
-    const users = JSON.parse(localStorage.getItem('users')||'[]');
-    if(users.some(u=>u.email===email)) return alert('Email already registered!');
-    users.push({name,email,password});
-    localStorage.setItem('users',JSON.stringify(users));
-    alert('Registration successful! You can now login.');
-    registerForm.reset();
-    toggleLogin.click();
-  });
+// REGISTER
+const registerForm = document.getElementById('registerForm');
+registerForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = registerForm.name.value.trim();
+  const email = registerForm.email.value.trim();
+  const password = registerForm.password.value;
+  const confirmPassword = registerForm.confirmPassword.value;
 
-  // LOGIN
-  const loginForm = document.getElementById('loginForm');
-  loginForm.addEventListener('submit',(e)=>{
-    e.preventDefault();
-    const email = loginForm.email.value.trim();
-    const password = loginForm.password.value;
-    const users = JSON.parse(localStorage.getItem('users')||'[]');
-    const user = users.find(u=>u.email===email && u.password===password);
-    if(user){
-      localStorage.setItem('loggedInUser',JSON.stringify(user));
-      alert('Login successful!');
-      window.location.href='index.html#shop'; // redirect to shop
-    }else{
-      alert('Invalid email or password.');
-    }
-  });
+  if (password !== confirmPassword) return alert('Passwords do not match!');
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  if (users.some(u => u.email === email)) return alert('Email already registered!');
 
-  // SHOP
-  const user = JSON.parse(localStorage.getItem('loggedInUser'));
-  if(!user){
-    document.getElementById('shop').style.display = 'none';
+  users.push({ name, email, password });
+  localStorage.setItem('users', JSON.stringify(users));
+  alert('Registration successful! You can now login.');
+  registerForm.reset();
+  toggleLogin.click();
+});
+
+// LOGIN
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = loginForm.email.value.trim();
+  const password = loginForm.password.value;
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if (user) {
+    localStorage.setItem('loggedInUser', JSON.stringify(user));
+    alert('Login successful!');
+    window.location.href = 'shop.html';
+  } else {
+    alert('Invalid email or password.');
   }
-
-  function addToCart(name, price){
-    let cart = JSON.parse(localStorage.getItem('cart')||'[]');
-    cart.push({name,price});
-    localStorage.setItem('cart',JSON.stringify(cart));
-    alert(name+' added to cart!');
-  }
+});
 </script>
 
 </body>
