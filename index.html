@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css" />
-  <meta name="description" content="Bad Pickney6 is a modern card-selling platform with stylish, responsive experiences." />
+  <meta name="description" content="Bad Pickney6 is a creative platform designed to bring modern, clean, and responsive experiences to your fingertips." />
+  <meta name="keywords" content="cards, cards development, card marketing, SEO, Bad Pickney6" />
+  <meta name="author" content="Bad Pickney6" />
   <link rel="icon" href="assets/images/favicon.ico" />
 </head>
 <body>
-
   <!-- HEADER -->
   <header>
-    <div class="container header-container">
+    <div class="container">
       <div class="logo">
         <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
         <h1>Bad Pickney6</h1>
@@ -26,16 +27,15 @@
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-      <button id="loginBtn" class="btn-login">Login/Register</button>
     </div>
   </header>
 
   <!-- HERO -->
   <section id="home" class="hero">
     <div class="container">
-      <h2>Buy Your Custom Cards</h2>
-      <p>Modern, sleek, and personalized cards at your fingertips.</p>
-      <a href="#shop" class="btn">Shop Now</a>
+      <h2>Welcome to Bad Pickney6</h2>
+      <p>Your place for modern cards and transparency.</p>
+      <a href="#about" class="btn">Learn More</a>
     </div>
   </section>
 
@@ -43,7 +43,9 @@
   <section id="about" class="section">
     <div class="container">
       <h2>About Bad Pickney6</h2>
-      <p>We provide high-quality modern cards designed for style and usability. Perfect for personal or business use.</p>
+      <p>
+        Bad Pickney6 is a platform designed to bring modern, clean, and responsive experiences to your fingertips. We focus on making your pockets look great and perform better.
+      </p>
     </div>
   </section>
 
@@ -53,16 +55,16 @@
       <h2>Our Services</h2>
       <div class="services-grid">
         <div class="service">
-          <h3>Custom Cards</h3>
-          <p>Design your own card or choose from our templates.</p>
+          <h3>Make You Rich</h3>
+          <p>Beautiful, modern, and responsive cards tailored to your needs.</p>
         </div>
         <div class="service">
-          <h3>Fast Delivery</h3>
-          <p>Get your cards quickly with safe and secure shipping.</p>
+          <h3>Development</h3>
+          <p>Custom cards and cashout for your web and mobile apps.</p>
         </div>
         <div class="service">
-          <h3>Support</h3>
-          <p>24/7 customer support for all your card needs.</p>
+          <h3>SEO & Marketing</h3>
+          <p>Boost your online presence with a DM now.</p>
         </div>
       </div>
     </div>
@@ -71,22 +73,16 @@
   <!-- SHOP -->
   <section id="shop" class="section">
     <div class="container">
-      <h2>Shop Cards</h2>
-      <p id="shopNotice" class="shop-notice">Please log in to view and buy cards.</p>
-      <div class="shop-grid" id="shopGrid"></div>
+      <h2>Shop Our Cards</h2>
+      <div id="shopGrid" class="shop-grid"></div>
+      <div id="cartContainer">
+        <h3>Your Cart</h3>
+        <ul id="cartList"></ul>
+        <p id="totalPrice">Total: $0</p>
+        <button id="checkoutBtn">Checkout</button>
+      </div>
     </div>
   </section>
-
-  <!-- CART / CHECKOUT MODAL -->
-  <div id="cartModal" class="cart-modal">
-    <div class="cart-content">
-      <h3>Your Cart</h3>
-      <ul id="cartItems"></ul>
-      <p id="cartTotal"></p>
-      <button id="checkoutBtn">Checkout</button>
-      <button id="closeCartBtn">Close</button>
-    </div>
-  </div>
 
   <!-- CONTACT -->
   <section id="contact" class="section">
@@ -101,32 +97,37 @@
     </div>
   </section>
 
-  <!-- LOGIN / REGISTER MODAL -->
-  <div id="authModal" class="auth-modal">
-    <div class="auth-content">
-      <button id="closeAuthBtn" class="close-btn">&times;</button>
-      <div class="auth-forms">
-        <div id="registerFormContainer">
-          <h3>Register</h3>
-          <form id="registerForm">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
-            <button type="submit">Register</button>
-          </form>
-        </div>
-        <div id="loginFormContainer">
-          <h3>Login</h3>
-          <form id="loginForm">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-          </form>
-        </div>
+  <!-- AUTH (LOGIN/REGISTER) -->
+  <section id="auth" class="section">
+    <div class="container">
+      <h2>Register or Login</h2>
+      <div class="auth-toggle">
+        <button id="toggleRegister">Register</button>
+        <button id="toggleLogin">Login</button>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerFormContainer" class="auth-form">
+        <form id="registerForm">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="password" name="password" id="password" placeholder="Password" required>
+          <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+          <div class="password-strength-meter" id="passwordStrengthMeter"></div>
+          <button type="submit">Register</button>
+        </form>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginFormContainer" class="auth-form">
+        <form id="loginForm">
+          <input type="email" name="email" placeholder="Your Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit">Login</button>
+        </form>
       </div>
     </div>
-  </div>
+  </section>
 
   <footer>
     <div class="container">
@@ -134,140 +135,165 @@
     </div>
   </footer>
 
-  <!-- SCRIPTS -->
+  <!-- ========================
+       JS
+  ======================== -->
   <script>
-    // Login/Register modal toggle
-    const authModal = document.getElementById('authModal');
-    const loginBtn = document.getElementById('loginBtn');
-    const closeAuthBtn = document.getElementById('closeAuthBtn');
-    loginBtn.addEventListener('click', () => authModal.style.display = 'flex');
-    closeAuthBtn.addEventListener('click', () => authModal.style.display = 'none');
+    // Toggle login/register forms
+    const registerContainer = document.getElementById('registerFormContainer');
+    const loginContainer = document.getElementById('loginFormContainer');
+    const toggleRegister = document.getElementById('toggleRegister');
+    const toggleLogin = document.getElementById('toggleLogin');
 
-    // Toggle forms inside modal
-    const registerFormContainer = document.getElementById('registerFormContainer');
-    const loginFormContainer = document.getElementById('loginFormContainer');
+    toggleRegister.addEventListener('click', () => {
+      registerContainer.style.display = 'block';
+      loginContainer.style.display = 'none';
+    });
+    toggleLogin.addEventListener('click', () => {
+      registerContainer.style.display = 'none';
+      loginContainer.style.display = 'block';
+    });
 
-    // Initialize forms
-    registerFormContainer.style.display = 'block';
-    loginFormContainer.style.display = 'none';
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
 
-    // Register form
+    // Password strength
+    const passwordInput = document.getElementById('password');
+    const strengthMeter = document.getElementById('passwordStrengthMeter');
+    passwordInput.addEventListener('input', () => {
+      const val = passwordInput.value;
+      let strength = 0;
+      if(val.length > 5) strength += 30;
+      if(/[A-Z]/.test(val)) strength += 30;
+      if(/[0-9]/.test(val)) strength += 20;
+      if(/[^A-Za-z0-9]/.test(val)) strength += 20;
+      strength = Math.min(strength, 100);
+      strengthMeter.style.width = strength + '%';
+      strengthMeter.style.height = '10px';
+      strengthMeter.style.background = strength<50 ? 'red' : strength<80 ? 'orange' : 'green';
+    });
+  </script>
+
+  <!-- ========================
+       SHOP & CART LOGIC
+  ======================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+      authDomain: "badute-5064d.firebaseapp.com",
+      projectId: "badute-594d",
+      storageBucket: "badute-5964d.appspot.com",
+      messagingSenderId: "432684410038",
+      appId: "7cf74922a7fe726ef32e17"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    // REGISTER
     const registerForm = document.getElementById('registerForm');
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener('submit', async e => {
       e.preventDefault();
+      const email = registerForm.email.value.trim();
+      const password = registerForm.password.value;
+      const confirmPassword = registerForm.confirmPassword.value;
       const name = registerForm.name.value.trim();
-      const email = registerForm.email.value.trim().toLowerCase();
-      const password = registerForm.password.value.trim();
-      const confirmPassword = registerForm.confirmPassword.value.trim();
 
-      if (password !== confirmPassword) return alert('Passwords do not match!');
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.some(u => u.email === email)) return alert('Email already registered!');
+      if(password !== confirmPassword) return alert("Passwords do not match");
 
-      users.push({ name, email, password });
-      localStorage.setItem('users', JSON.stringify(users));
-      alert('Registration successful! You can now login.');
-      registerForm.reset();
-      registerFormContainer.style.display = 'none';
-      loginFormContainer.style.display = 'block';
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await setDoc(doc(db, "users", user.uid), { name, email });
+        alert("Registered!");
+        toggleLogin.click();
+      } catch(err) { alert(err.message); }
     });
 
-    // Login form
+    // LOGIN
     const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async e => {
       e.preventDefault();
-      const email = loginForm.email.value.trim().toLowerCase();
-      const password = loginForm.password.value.trim();
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.email === email && u.password === password);
-      if (user) {
-        localStorage.setItem('loggedInUser', JSON.stringify(user));
-        alert('Login successful!');
-        authModal.style.display = 'none';
-        showShop(); // show shop now that user is logged in
-      } else {
-        alert('Invalid email or password.');
-      }
+      const email = loginForm.email.value.trim();
+      const password = loginForm.password.value;
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        localStorage.setItem('loggedInUser', JSON.stringify({uid: user.uid, email: user.email}));
+        alert("Logged in!");
+        window.location.href = "#shop"; // go to shop after login
+      } catch(err) { alert(err.message); }
     });
 
-    // SHOP ITEMS
-    const shopItems = [
-      { name: 'Red Card', price: 10, color: '#e74c3c' },
-      { name: 'Blue Card', price: 12, color: '#3498db' },
-      { name: 'Green Card', price: 11, color: '#2ecc71' },
-      { name: 'Purple Card', price: 13, color: '#9b59b6' }
+    // SHOP DATA
+    const shopGrid = document.getElementById('shopGrid');
+    const cartList = document.getElementById('cartList');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    let cart = [];
+    const products = [
+      { name:"Red Card", price:10, color:"#ff4d4d" },
+      { name:"Blue Card", price:12, color:"#4d79ff" },
+      { name:"Green Card", price:8, color:"#4dff88" }
     ];
 
-    const shopGrid = document.getElementById('shopGrid');
-    const shopNotice = document.getElementById('shopNotice');
-
-    function showShop() {
-      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-      if (!loggedInUser) {
-        shopNotice.style.display = 'block';
-        shopGrid.innerHTML = '';
-        return;
-      }
-      shopNotice.style.display = 'none';
-      shopGrid.innerHTML = '';
-      shopItems.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'shop-card';
-        card.innerHTML = `
-          <div class="card-preview" style="background-color: ${item.color}; height: 150px; border-radius: 12px;"></div>
-          <h3>${item.name}</h3>
-          <p>$${item.price}</p>
-          <button class="buy-btn" data-index="${index}">Add to Cart</button>
-        `;
-        shopGrid.appendChild(card);
-      });
-
-      // Add to cart
-      document.querySelectorAll('.buy-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    function renderShop() {
+      shopGrid.innerHTML = products.map((p,i)=>`
+        <div class="shop-card" style="background:${p.color}">
+          <h3>${p.name}</h3>
+          <p>$${p.price}</p>
+          <button class="buy-btn" data-index="${i}">Add to Cart</button>
+        </div>
+      `).join('');
+      document.querySelectorAll('.buy-btn').forEach(btn=>{
+        btn.addEventListener('click', e=>{
           const idx = e.target.dataset.index;
-          addToCart(shopItems[idx]);
+          cart.push(products[idx]);
+          renderCart();
         });
       });
     }
 
-    // CART
-    let cart = [];
-    const cartModal = document.getElementById('cartModal');
-    const cartItemsList = document.getElementById('cartItems');
-    const cartTotal = document.getElementById('cartTotal');
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    const closeCartBtn = document.getElementById('closeCartBtn');
-
-    function addToCart(item) {
-      cart.push(item);
-      updateCartDisplay();
-      cartModal.style.display = 'flex';
+    function renderCart() {
+      cartList.innerHTML = cart.map(p=>`<li>${p.name} - $${p.price}</li>`).join('');
+      const total = cart.reduce((a,b)=>a+b.price,0);
+      totalPriceEl.textContent = "Total: $"+total;
     }
 
-    function updateCartDisplay() {
-      cartItemsList.innerHTML = '';
-      let total = 0;
-      cart.forEach((item, i) => {
-        total += item.price;
-        const li = document.createElement('li');
-        li.textContent = `${item.name} - $${item.price}`;
-        cartItemsList.appendChild(li);
-      });
-      cartTotal.textContent = `Total: $${total}`;
-    }
-
-    closeCartBtn.addEventListener('click', () => cartModal.style.display = 'none');
-
-    checkoutBtn.addEventListener('click', () => {
-      alert('Checkout completed! (demo mode)');
-      cart = [];
-      updateCartDisplay();
-      cartModal.style.display = 'none';
+    checkoutBtn.addEventListener('click', async ()=>{
+      const user = auth.currentUser;
+      if(!user) return alert("You must be logged in to checkout");
+      if(cart.length===0) return alert("Cart is empty");
+      try {
+        await addDoc(collection(db,"purchases"),{
+          user: user.uid,
+          items: cart,
+          total: cart.reduce((a,b)=>a+b.price,0),
+          date: new Date().toISOString()
+        });
+        alert("Purchase recorded!");
+        cart=[];
+        renderCart();
+      } catch(err){ alert(err.message); }
     });
 
-    // On load, show shop if logged in
-    document.addEventListener('DOMContentLoaded', showShop);
+    renderShop();
+
+    // SHOW SHOP ONLY TO LOGGED-IN USERS
+    const shopSection = document.getElementById('shop');
+    shopSection.style.display = "none";
+    onAuthStateChanged(auth,user=>{
+      if(user){ shopSection.style.display="block"; }
+      else { shopSection.style.display="none"; }
+    });
+
   </script>
 </body>
 </html>
