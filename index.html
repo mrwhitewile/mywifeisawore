@@ -8,124 +8,231 @@
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="container">
-      <div class="logo">
-        <h1>Bad Pickney6</h1>
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="logo">
+      <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
+      <h1>Bad Pickney6</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="container">
+    <h2>Welcome to Bad Pickney6</h2>
+    <p>Your place for modern cards and transparency.</p>
+    <a href="#about" class="btn">Learn More</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="container">
+    <h2>About Bad Pickney6</h2>
+    <p>Bad Pickney6 is a platform designed to bring modern, clean, and responsive experiences to your fingertips and pockets.</p>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="section">
+  <div class="container">
+    <h2>Our Services</h2>
+    <div class="services-grid">
+      <div class="service">
+        <h3>Make You Rich</h3>
+        <p>Beautiful, modern, and responsive cards tailored to your needs.</p>
       </div>
-      <nav>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#shop">Shop</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
+      <div class="service">
+        <h3>Development</h3>
+        <p>Custom cards and cashout for your web and mobile apps.</p>
+      </div>
+      <div class="service">
+        <h3>SEO & Marketing</h3>
+        <p>Boost your online presence with a DM now.</p>
+      </div>
     </div>
-  </header>
+  </div>
+</section>
 
-  <!-- HERO -->
-  <section id="home" class="hero">
-    <div class="container">
-      <h2>Modern Cards at Your Fingertips</h2>
-      <p>Beautiful, responsive cards you can use online or offline.</p>
+<!-- AUTH (LOGIN/REGISTER) -->
+<section id="auth" class="section">
+  <div class="container">
+    <h2>Register or Login</h2>
+    <div class="auth-toggle">
+      <button id="toggleRegister">Register</button>
+      <button id="toggleLogin">Login</button>
     </div>
-  </section>
 
-  <!-- ABOUT -->
-  <section id="about" class="section">
-    <div class="container">
-      <h2>About Bad Pickney6</h2>
-      <p>We make card designs that are modern, clean, and functional. Buy once, use forever.</p>
-    </div>
-  </section>
-
-  <!-- SHOP (only visible to logged-in users) -->
-  <section id="shop" class="section">
-    <div class="container">
-      <h2>Shop Our Cards</h2>
-      <div id="shopGrid" class="shop-grid"></div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact" class="section">
-    <div class="container">
-      <h2>Contact Us</h2>
-      <form action="https://formspree.io/f/xgvregnq" method="POST">
-        <input type="text" name="name" placeholder="Your Name" required />
-        <input type="email" name="email" placeholder="Your Email" required />
-        <textarea name="message" placeholder="Your Message" required></textarea>
-        <button type="submit">Send Message</button>
+    <!-- REGISTER -->
+    <div id="registerFormContainer" class="auth-form">
+      <form id="registerForm">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+        <div class="password-strength-meter" id="passwordStrengthMeter"></div>
+        <button type="submit">Register</button>
       </form>
     </div>
-  </section>
 
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 Bad Pickney6</p>
+    <!-- LOGIN -->
+    <div id="loginFormContainer" class="auth-form">
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <!-- Firebase + Shop Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+<!-- SHOP SECTION -->
+<section id="shop" class="section">
+  <div class="container">
+    <h2>Shop Cards</h2>
+    <div class="shop-grid">
+      <div class="shop-card">
+        <div class="card-preview" style="background:#FFD700;">Gold Card</div>
+        <h3>Gold Card</h3>
+        <p>$50.00</p>
+        <button class="buy-btn" onclick="addToCart('Gold Card', 50)">Buy</button>
+      </div>
+      <div class="shop-card">
+        <div class="card-preview" style="background:#C0C0C0;">Silver Card</div>
+        <h3>Silver Card</h3>
+        <p>$30.00</p>
+        <button class="buy-btn" onclick="addToCart('Silver Card', 30)">Buy</button>
+      </div>
+      <div class="shop-card">
+        <div class="card-preview" style="background:#CD7F32;">Bronze Card</div>
+        <h3>Bronze Card</h3>
+        <p>$20.00</p>
+        <button class="buy-btn" onclick="addToCart('Bronze Card', 20)">Buy</button>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:30px;">
+      <a href="checkout.html" class="btn">Go to Checkout</a>
+    </div>
+  </div>
+</section>
 
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="container">
+    <h2>Contact Us</h2>
+    <form action="https://formspree.io/f/xgvregnq" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
+  </div>
+</footer>
 
-    // Shop items
-    const cards = [
-      { name: "Gold Card", price: 49.99, color: "#FFD700" },
-      { name: "Silver Card", price: 29.99, color: "#C0C0C0" },
-      { name: "Platinum Card", price: 99.99, color: "#E5E4E2" },
-      { name: "Black Card", price: 199.99, color: "#000000" },
-    ];
+<!-- ============================
+   SCRIPTS
+============================ -->
+<script>
+  // Toggle auth forms
+  const registerContainer = document.getElementById('registerFormContainer');
+  const loginContainer = document.getElementById('loginFormContainer');
+  const toggleRegister = document.getElementById('toggleRegister');
+  const toggleLogin = document.getElementById('toggleLogin');
 
-    const shopGrid = document.getElementById("shopGrid");
+  toggleRegister.addEventListener('click', () => {
+    registerContainer.style.display = 'block';
+    loginContainer.style.display = 'none';
+  });
+  toggleLogin.addEventListener('click', () => {
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
+  });
 
-    function displayCards() {
-      shopGrid.innerHTML = cards.map(card => `
-        <div class="shop-card" style="background-color:${card.color};">
-          <h3>${card.name}</h3>
-          <p>$${card.price.toFixed(2)}</p>
-          <button class="buy-btn" data-name="${card.name}" data-price="${card.price}">Buy</button>
-        </div>
-      `).join('');
+  registerContainer.style.display = 'none';
+  loginContainer.style.display = 'block';
 
-      document.querySelectorAll('.buy-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-          cart.push({ name: btn.dataset.name, price: parseFloat(btn.dataset.price) });
-          localStorage.setItem('cart', JSON.stringify(cart));
-          alert(`${btn.dataset.name} added to cart!`);
-          window.location.href = "checkout.html";
-        });
-      });
+  // Password strength
+  const passwordInput = document.getElementById('password');
+  const strengthMeter = document.getElementById('passwordStrengthMeter');
+
+  passwordInput.addEventListener('input', () => {
+    const val = passwordInput.value;
+    let strength = 0;
+    if(val.length>5) strength+=30;
+    if(/[A-Z]/.test(val)) strength+=30;
+    if(/[0-9]/.test(val)) strength+=20;
+    if(/[^A-Za-z0-9]/.test(val)) strength+=20;
+    strength=Math.min(strength,100);
+    strengthMeter.style.width = strength+'%';
+    strengthMeter.style.height = '10px';
+    strengthMeter.style.background = strength<50?'red':strength<80?'orange':'green';
+  });
+
+  // REGISTER
+  const registerForm = document.getElementById('registerForm');
+  registerForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const name = registerForm.name.value.trim();
+    const email = registerForm.email.value.trim();
+    const password = registerForm.password.value;
+    const confirmPassword = registerForm.confirmPassword.value;
+    if(password!==confirmPassword) return alert('Passwords do not match!');
+    const users = JSON.parse(localStorage.getItem('users')||'[]');
+    if(users.some(u=>u.email===email)) return alert('Email already registered!');
+    users.push({name,email,password});
+    localStorage.setItem('users',JSON.stringify(users));
+    alert('Registration successful! You can now login.');
+    registerForm.reset();
+    toggleLogin.click();
+  });
+
+  // LOGIN
+  const loginForm = document.getElementById('loginForm');
+  loginForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const email = loginForm.email.value.trim();
+    const password = loginForm.password.value;
+    const users = JSON.parse(localStorage.getItem('users')||'[]');
+    const user = users.find(u=>u.email===email && u.password===password);
+    if(user){
+      localStorage.setItem('loggedInUser',JSON.stringify(user));
+      alert('Login successful!');
+      window.location.href='index.html#shop'; // redirect to shop
+    }else{
+      alert('Invalid email or password.');
     }
+  });
 
-    // Only show shop if logged in
-    onAuthStateChanged(auth, user => {
-      if(user) {
-        document.getElementById("shop").style.display = "block";
-        displayCards();
-      } else {
-        document.getElementById("shop").style.display = "none";
-      }
-    });
+  // SHOP
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  if(!user){
+    document.getElementById('shop').style.display = 'none';
+  }
 
-  </script>
+  function addToCart(name, price){
+    let cart = JSON.parse(localStorage.getItem('cart')||'[]');
+    cart.push({name,price});
+    localStorage.setItem('cart',JSON.stringify(cart));
+    alert(name+' added to cart!');
+  }
+</script>
+
 </body>
 </html>
