@@ -1,92 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bad Pickney6</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- BASIC DARK MODE STYLES -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+    }
+
+    header {
+      background: #1a1a1a;
+      padding: 20px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background: #141414;
+    }
+
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #1a1a1a;
+      margin-top: 40px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #008cff;
+      color: #fff;
+      padding: 12px 25px;
+      margin-top: 20px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+  </style>
 </head>
 
-<body class="dark">
-
+<body>
   <!-- HEADER -->
-  <header class="header">
-    <div class="container header-flex">
-
-      <!-- LOGO + TITLE -->
-      <div class="logo-flex">
-        <img src="bankrobber.png" alt="Logo" class="logo-img">
-        <h1>Bad Pickney6</h1>
-      </div>
-
-      <!-- NAVIGATION -->
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="shop.html" id="shopLink">Shop</a></li>
-          <li><button id="logoutBtn" class="logout-btn">Logout</button></li>
-        </ul>
-      </nav>
-
-    </div>
+  <header>
+    <h1 style="text-align:center;">Bad Pickney6</h1>
+    <nav>
+      <ul>
+        <li><a href="#home" id="homeLink">Home</a></li>
+        <li><a href="#about" >About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li id="shopLink" style="display:none;"><a href="shop.html">Shop</a></li>
+        <li id="authLink"><a href="login.html">Login</a></li>
+      </ul>
+    </nav>
   </header>
 
   <!-- HERO -->
-  <section id="home" class="hero section">
-    <div class="container center">
-      <h2>Welcome to Bad Pickney6</h2>
-      <p>Your modern, clean, dark-mode digital experience.</p>
-      <a href="#about" class="btn">Learn More</a>
-    </div>
+  <section id="home" class="hero">
+    <h2>Welcome to Bad Pickney6</h2>
+    <p>Your home for clean modern designs and digital services.</p>
+    <a href="#about" class="btn">Learn More</a>
   </section>
 
   <!-- ABOUT -->
-  <section id="about" class="section container">
+  <section id="about" class="section">
     <h2>About Us</h2>
-    <p>
-      Bad Pickney6 delivers sharp modern visuals, responsive design, and 
-      smooth UI experiences. Our goal is to create clean, bold interfaces 
-      that stand out without the clutter.
-    </p>
+    <p>Bad Pickney6 focuses on creativity, design, and engaging digital experiences.</p>
   </section>
 
   <!-- SERVICES -->
-  <section id="services" class="section container">
+  <section id="services" class="section">
     <h2>Our Services</h2>
-
-    <div class="services-grid">
-
-      <div class="service-box">
-        <h3>Design</h3>
-        <p>Logo creation, branding, and clean visual identity packages.</p>
-      </div>
-
-      <div class="service-box">
-        <h3>Development</h3>
-        <p>Responsive websites built with modern best-practices.</p>
-      </div>
-
-      <div class="service-box">
-        <h3>Digital Tools</h3>
-        <p>Custom dashboards, UI elements, and dark-mode interfaces.</p>
-      </div>
-
-    </div>
+    <p>We offer digital design, branding, and web development solutions.</p>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>© 2025 Bad Pickney6 — All Rights Reserved</p>
+  <footer>
+    <p>&copy; 2025 Bad Pickney6</p>
   </footer>
 
-  <!-- FIREBASE AUTH PROTECTION -->
+  <!-- FIREBASE AUTH SCRIPT -->
   <script type="module">
-
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut }
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { 
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
@@ -100,20 +122,22 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // 🔐 BLOCK PAGE if user is NOT logged in
+    const shopLink = document.getElementById("shopLink");
+    const authLink = document.getElementById("authLink");
+
+    // ================
+    // SHOW/HIDE NAV ITEMS BASED ON LOGIN
+    // ================
     onAuthStateChanged(auth, user => {
       if (!user) {
+        // NOT LOGGED IN → send to login.html
         window.location.href = "login.html";
+      } else {
+        // LOGGED IN
+        shopLink.style.display = "block";
+        authLink.style.display = "none";
       }
     });
-
-    // 🔓 LOGOUT BUTTON
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
-    });
-
   </script>
 
 </body>
