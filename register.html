@@ -3,153 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - Bad Pickney6</title>
+  <title>Shop - Bad Pickney6</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .register-container {
-      background: #1a1a1a;
-      padding: 40px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      width: 350px;
-      text-align: center;
-    }
-
-    .register-container h2 {
-      margin-bottom: 30px;
-      color: #00bfff;
-    }
-
-    input[type="email"], input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: none;
-      border-radius: 6px;
-    }
-
-    .btn {
-      background: #008cff;
-      color: #fff;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
-
-    .btn:hover {
-      background: #00bfff;
-    }
-
-    .error {
-      color: #ff4c4c;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    .success {
-      color: #4cff4c;
-      margin-bottom: 15px;
-      display: none;
-    }
-
-    a {
-      color: #00bfff;
-      text-decoration: none;
-      font-size: 14px;
-      display: inline-block;
-      margin-top: 15px;
-    }
+    body { font-family: Arial, sans-serif; background:#0f0f0f; color:white; padding:20px; }
+    h2 { color:#00bfff; text-align:center; margin-bottom:20px; }
+    form { max-width:400px; margin:auto; background:#1a1a1a; padding:20px; border-radius:10px; }
+    select, input { width:100%; padding:12px; margin-bottom:15px; border-radius:6px; border:none; }
+    button { background:#008cff; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; width:100%; }
+    button:hover { background:#00bfff; }
+    .success, .error { text-align:center; margin-bottom:15px; display:none; }
+    .success { color:#4cff4c; }
+    .error { color:#ff4c4c; }
   </style>
 </head>
 <body>
-  <div class="register-container">
-    <h2>Create Account</h2>
-    <div id="error" class="error"></div>
-    <div id="success" class="success"></div>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-    <button id="registerBtn" class="btn">Register</button>
-    <a href="login.html">Already have an account? Login</a>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+<h2>Shop - Pick Your Card</h2>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
-      authDomain: "badute-5064d.firebaseapp.com",
-      projectId: "badute-594d",
-      storageBucket: "badute-5964d.appspot.com",
-      messagingSenderId: "432684410038",
-      appId: "7cf74922a7fe726ef32e17"
+<div class="success" id="success">Checkout submitted!</div>
+<div class="error" id="error"></div>
+
+<form id="shopForm">
+  <label for="card">Select Card:</label>
+  <select id="card" required>
+    <option value="">-- Choose a card --</option>
+    <option value="Visa">Visa</option>
+    <option value="MasterCard">MasterCard</option>
+    <option value="American Express">American Express</option>
+    <option value="Discover">Discover</option>
+  </select>
+
+  <label for="quantity">Quantity:</label>
+  <input type="number" id="quantity" placeholder="1" min="1" value="1" required>
+
+  <button type="submit">Checkout</button>
+</form>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+    authDomain: "badute-5064d.firebaseapp.com",
+    projectId: "badute-594d",
+    storageBucket: "badute-5964d.appspot.com",
+    messagingSenderId: "432684410038",
+    appId: "7cf74922a7fe726ef32e17"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const form = document.getElementById("shopForm");
+  const successDiv = document.getElementById("success");
+  const errorDiv = document.getElementById("error");
+
+  // Protect page: only logged-in users
+  onAuthStateChanged(auth, user => {
+    if(!user){
+      window.location.href = "login.html";
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+
+    if(!user){
+      errorDiv.textContent = "You must be logged in!";
+      errorDiv.style.display = "block";
+      return;
+    }
+
+    const data = {
+      user: user.email,
+      card: document.getElementById("card").value,
+      quantity: document.getElementById("quantity").value,
+      timestamp: new Date().toISOString()
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    if(!data.card){
+      errorDiv.textContent = "Please select a card.";
+      errorDiv.style.display = "block";
+      return;
+    }
 
-    const registerBtn = document.getElementById("registerBtn");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
-    const errorDiv = document.getElementById("error");
-    const successDiv = document.getElementById("success");
+    try {
+      // Your actual RequestBin URL
+      const binUrl = "https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro";
 
-    // Redirect if already logged in
-    onAuthStateChanged(auth, user => {
-      if(user){
-        window.location.href = "index.html";
-      }
-    });
+      const response = await fetch(binUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-    registerBtn.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      const confirmPassword = confirmPasswordInput.value;
-
-      errorDiv.style.display = "none";
-      successDiv.style.display = "none";
-
-      if(!email || !password || !confirmPassword){
-        errorDiv.textContent = "All fields are required.";
-        errorDiv.style.display = "block";
-        return;
-      }
-
-      if(password !== confirmPassword){
-        errorDiv.textContent = "Passwords do not match.";
-        errorDiv.style.display = "block";
-        return;
-      }
-
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        successDiv.textContent = "Account created! Redirecting to home...";
+      if(response.ok){
         successDiv.style.display = "block";
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 1000);
-      } catch(err){
-        errorDiv.textContent = err.message;
-        errorDiv.style.display = "block";
+        errorDiv.style.display = "none";
+        form.reset();
+      } else {
+        throw new Error("Failed to submit checkout.");
       }
-    });
-  </script>
+    } catch(err){
+      errorDiv.textContent = err.message;
+      errorDiv.style.display = "block";
+      successDiv.style.display = "none";
+    }
+  });
+</script>
+
 </body>
 </html>
