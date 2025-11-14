@@ -6,87 +6,80 @@
   <title>Bad Pickney6</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+
+<body class="dark">
+
   <!-- HEADER -->
-  <header>
-    <div class="container">
-      <h1>Bad Pickney6</h1>
+  <header class="header">
+    <div class="container header-flex">
+      <div class="logo-flex">
+        <img src="bankrobber.png" alt="Logo" class="logo-img">
+        <h1>Bad Pickney6</h1>
+      </div>
+
       <nav>
-        <ul>
+        <ul class="nav-links">
           <li><a href="#home">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#services">Services</a></li>
-          <li id="shopLink" style="display:none;"><a href="shop.html">Shop</a></li>
-          <li id="authLink"><a href="#auth">Login/Register</a></li>
+          <li><a href="shop.html" id="shopLink">Shop</a></li>
+          <li><button id="logoutBtn" class="logout-btn">Logout</button></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <!-- HERO -->
+  <!-- HERO SECTION -->
   <section id="home" class="hero">
-    <div class="container">
+    <div class="container center">
       <h2>Welcome to Bad Pickney6</h2>
-      <p>Modern cards, great looks, best experience.</p>
-      <a href="#about" class="btn">Learn More</a>
+      <p>Modern cards. Clean design. Smooth experience.</p>
+      <a href="#about" class="btn">Explore More</a>
     </div>
   </section>
 
   <!-- ABOUT -->
-  <section id="about" class="section">
+  <section id="about" class="section container">
     <h2>About Us</h2>
-    <p>Bad Pickney6 brings modern, clean, and responsive card experiences to your pockets.</p>
+    <p>
+      Bad Pickney6 creates modern digital experiences with smooth, responsive 
+      design and a clean nighttime aesthetic. We focus on premium UI, seamless 
+      interaction, and professional-touch layouts.
+    </p>
   </section>
 
   <!-- SERVICES -->
-  <section id="services" class="section">
+  <section id="services" class="section container">
     <h2>Our Services</h2>
+
     <div class="services-grid">
-      <div class="service">
-        <h3>Make You Rich</h3>
-        <p>Beautiful, modern, responsive cards tailored to you.</p>
+      <div class="service-box">
+        <h3>Premium UI Design</h3>
+        <p>Custom modern card designs tailored for your project.</p>
       </div>
-      <div class="service">
-        <h3>Development</h3>
-        <p>Custom cards and cashout for your apps.</p>
+
+      <div class="service-box">
+        <h3>Web Development</h3>
+        <p>Clean, fast, responsive website builds.</p>
       </div>
-      <div class="service">
-        <h3>SEO & Marketing</h3>
-        <p>Boost your presence with a DM now.</p>
+
+      <div class="service-box">
+        <h3>Branding</h3>
+        <p>Logos, themes, and identity packages for your brand.</p>
       </div>
     </div>
   </section>
 
-  <!-- AUTH -->
-  <section id="auth" class="section">
-    <h2>Login or Register</h2>
-    <div id="authForms">
-      <!-- Register -->
-      <form id="registerForm">
-        <input type="text" placeholder="Name" required>
-        <input type="email" placeholder="Email" required>
-        <input type="password" id="regPassword" placeholder="Password" required>
-        <input type="password" id="regConfirm" placeholder="Confirm Password" required>
-        <button type="submit">Register</button>
-      </form>
-
-      <!-- Login -->
-      <form id="loginForm">
-        <input type="email" placeholder="Email" required>
-        <input type="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 Bad Pickney6</p>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2025 Bad Pickney6 — All Rights Reserved</p>
   </footer>
 
-  <!-- FIREBASE & AUTH -->
+  <!-- FIREBASE AUTH PROTECTION -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
@@ -100,40 +93,20 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
-    const shopLink = document.getElementById('shopLink');
-    const authLink = document.getElementById('authLink');
-
-    registerForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const name = registerForm[0].value.trim();
-      const email = registerForm[1].value.trim();
-      const password = registerForm[2].value;
-      const confirm = registerForm[3].value;
-      if(password !== confirm) return alert("Passwords don't match!");
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => alert('Registered! You can now log in.'))
-        .catch(err => alert(err.message));
-    });
-
-    loginForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const email = loginForm[0].value.trim();
-      const password = loginForm[1].value;
-      signInWithEmailAndPassword(auth, email, password)
-        .catch(err => alert(err.message));
-    });
-
+    // 🔐 Ensure user is logged in
     onAuthStateChanged(auth, user => {
-      if(user){
-        shopLink.style.display = 'block';
-        authLink.style.display = 'none';
-      } else {
-        shopLink.style.display = 'none';
-        authLink.style.display = 'block';
+      if (!user) {
+        window.location.href = "login.html";
       }
     });
+
+    // 🔓 Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    });
   </script>
+
 </body>
 </html>
