@@ -1,80 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bad Pickney6 Shop</title>
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Bad Pickney6</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f0f0f; color:white; padding:20px; }
+    h2 { color: #00bfff; text-align:center; margin-bottom:20px; }
+    form { max-width:400px; margin:auto; background:#1a1a1a; padding:20px; border-radius:10px; }
+    input, select { width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:none; }
+    button { background:#008cff; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; width:100%; }
+    button:hover { background:#00bfff; }
+    .success, .error { text-align:center; margin-bottom:15px; display:none; }
+    .success { color:#4cff4c; }
+    .error { color:#ff4c4c; }
+  </style>
 </head>
 <body>
 
-<header>
-  <div class="container">
-    <div class="logo">
-      <img src="assets/images/bank-robber.png" alt="Bank Robber Logo" />
-      <h1>Bad Pickney6</h1>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="checkout.html">Checkout</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+<h2>Shop - Checkout</h2>
 
-<section id="shop" class="section">
-  <div class="container">
-    <h2>Shop Cards</h2>
-    <div class="shop-grid" id="shopGrid"></div>
-  </div>
-</section>
+<div class="success" id="success">Checkout submitted!</div>
+<div class="error" id="error"></div>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2025 Bad Pickney6. All rights reserved.</p>
-  </div>
-</footer>
+<form id="shopForm">
+  <input type="text" id="item" placeholder="Item Name" required>
+  <input type="number" id="quantity" placeholder="Quantity" required>
+  <input type="text" id="note" placeholder="Note (optional)">
+  <button type="submit">Checkout</button>
+</form>
 
-<script>
-// Only logged-in users
-const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-if (!loggedInUser) {
-  alert("You must be logged in to access the shop.");
-  window.location.href = 'index.html';
-}
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-// Sample card products
-const cards = [
-  { name: "Gold Card", price: 99, color: "#FFD700" },
-  { name: "Platinum Card", price: 149, color: "#E5E4E2" },
-  { name: "Diamond Card", price: 199, color: "#B9F2FF" },
-  { name: "Ruby Card", price: 129, color: "#E0115F" },
-  { name: "Sapphire Card", price: 139, color: "#0F52BA" }
-];
+  const firebaseConfig = {
+    apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+    authDomain: "badute-5064d.firebaseapp.com",
+    projectId: "badute-594d",
+    storageBucket: "badute-5964d.appspot.com",
+    messagingSenderId: "432684410038",
+    appId: "7cf74922a7fe726ef32e17"
+  };
 
-const shopGrid = document.getElementById('shopGrid');
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// Display cards
-cards.forEach(card => {
-  const cardEl = document.createElement('div');
-  cardEl.className = 'shop-card';
-  cardEl.style.background = card.color;
-  cardEl.innerHTML = `
-    <h3>${card.name}</h3>
-    <p>Price: $${card.price}</p>
-    <button class="buy-btn">Add to Cart</button>
-  `;
-  shopGrid.appendChild(cardEl);
+  const form = document.getElementById("shopForm");
+  const successDiv = document.getElementById("success");
+  const errorDiv = document.getElementById("error");
 
-  cardEl.querySelector('.buy-btn').addEventListener('click', () => {
-    cart.push(card);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`${card.name} added to cart!`);
+  // Protect page: only logged-in users
+  onAuthStateChanged(auth, user => {
+    if(!user){
+      window.location.href = "login.html";
+    }
   });
-});
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const user = auth.currentUser;
+    if(!user){
+      errorDiv.textContent = "You must be logged in!";
+      errorDiv.style.display = "block";
+      return;
+    }
+
+    const data = {
+      user: user.email,
+      item: document.getElementById("item").value,
+      quantity: document.getElementById("quantity").value,
+      note: document.getElementById("note").value,
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      // Replace this URL with your RequestBin endpoint
+      const binUrl = "YOUR_REQUESTBIN_URL_HERE";
+
+      const response = await fetch(binUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if(response.ok){
+        successDiv.style.display = "block";
+        errorDiv.style.display = "none";
+        form.reset();
+      } else {
+        throw new Error("Failed to send data to RequestBin");
+      }
+    } catch(err){
+      errorDiv.textContent = err.message;
+      errorDiv.style.display = "block";
+      successDiv.style.display = "none";
+    }
+  });
 </script>
 
 </body>
