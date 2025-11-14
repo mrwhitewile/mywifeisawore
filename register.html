@@ -1,42 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Register</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Bad Pickney6</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .register-container {
+      background: #1a1a1a;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 350px;
+      text-align: center;
+    }
+
+    .register-container h2 {
+      margin-bottom: 30px;
+      color: #00bfff;
+    }
+
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .btn {
+      background: #008cff;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #00bfff;
+    }
+
+    .error {
+      color: #ff4c4c;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .success {
+      color: #4cff4c;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    a {
+      color: #00bfff;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="register.html">Register</a></li>
-      </ul>
-    </nav>
-    <h1>CC Seller</h1>
-    <p>Buy Fake Credit Cards Online</p>
-  </header>
+  <div class="register-container">
+    <h2>Create Account</h2>
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+    <button id="registerBtn" class="btn">Register</button>
+    <a href="login.html">Already have an account? Login</a>
+  </div>
 
-  <main>
-    <section>
-      <h2>Register</h2>
-      <form id="register-form">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required />
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
+    const firebaseConfig = {
+      apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
+      authDomain: "badute-5064d.firebaseapp.com",
+      projectId: "badute-594d",
+      storageBucket: "badute-5964d.appspot.com",
+      messagingSenderId: "432684410038",
+      appId: "7cf74922a7fe726ef32e17"
+    };
 
-        <button type="submit">Register</button>
-      </form>
-    </section>
-  </main>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  <footer>
-    <p>&copy; 2025 CC Seller. All rights reserved.</p>
-  </footer>
+    const registerBtn = document.getElementById("registerBtn");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const errorDiv = document.getElementById("error");
+    const successDiv = document.getElementById("success");
 
-  <script src="script.js"></script>
+    // Redirect if already logged in
+    onAuthStateChanged(auth, user => {
+      if(user){
+        window.location.href = "index.html";
+      }
+    });
+
+    registerBtn.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      errorDiv.style.display = "none";
+      successDiv.style.display = "none";
+
+      if(!email || !password || !confirmPassword){
+        errorDiv.textContent = "All fields are required.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      if(password !== confirmPassword){
+        errorDiv.textContent = "Passwords do not match.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        successDiv.textContent = "Account created! Redirecting to home...";
+        successDiv.style.display = "block";
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      } catch(err){
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>
