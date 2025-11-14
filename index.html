@@ -12,11 +12,14 @@
   <!-- HEADER -->
   <header class="header">
     <div class="container header-flex">
+
+      <!-- LOGO + TITLE -->
       <div class="logo-flex">
         <img src="bankrobber.png" alt="Logo" class="logo-img">
         <h1>Bad Pickney6</h1>
       </div>
 
+      <!-- NAVIGATION -->
       <nav>
         <ul class="nav-links">
           <li><a href="#home">Home</a></li>
@@ -26,15 +29,16 @@
           <li><button id="logoutBtn" class="logout-btn">Logout</button></li>
         </ul>
       </nav>
+
     </div>
   </header>
 
-  <!-- HERO SECTION -->
-  <section id="home" class="hero">
+  <!-- HERO -->
+  <section id="home" class="hero section">
     <div class="container center">
       <h2>Welcome to Bad Pickney6</h2>
-      <p>Modern cards. Clean design. Smooth experience.</p>
-      <a href="#about" class="btn">Explore More</a>
+      <p>Your modern, clean, dark-mode digital experience.</p>
+      <a href="#about" class="btn">Learn More</a>
     </div>
   </section>
 
@@ -42,9 +46,9 @@
   <section id="about" class="section container">
     <h2>About Us</h2>
     <p>
-      Bad Pickney6 creates modern digital experiences with smooth, responsive 
-      design and a clean nighttime aesthetic. We focus on premium UI, seamless 
-      interaction, and professional-touch layouts.
+      Bad Pickney6 delivers sharp modern visuals, responsive design, and 
+      smooth UI experiences. Our goal is to create clean, bold interfaces 
+      that stand out without the clutter.
     </p>
   </section>
 
@@ -53,20 +57,22 @@
     <h2>Our Services</h2>
 
     <div class="services-grid">
+
       <div class="service-box">
-        <h3>Premium UI Design</h3>
-        <p>Custom modern card designs tailored for your project.</p>
+        <h3>Design</h3>
+        <p>Logo creation, branding, and clean visual identity packages.</p>
       </div>
 
       <div class="service-box">
-        <h3>Web Development</h3>
-        <p>Clean, fast, responsive website builds.</p>
+        <h3>Development</h3>
+        <p>Responsive websites built with modern best-practices.</p>
       </div>
 
       <div class="service-box">
-        <h3>Branding</h3>
-        <p>Logos, themes, and identity packages for your brand.</p>
+        <h3>Digital Tools</h3>
+        <p>Custom dashboards, UI elements, and dark-mode interfaces.</p>
       </div>
+
     </div>
   </section>
 
@@ -77,6 +83,7 @@
 
   <!-- FIREBASE AUTH PROTECTION -->
   <script type="module">
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut }
     from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
@@ -93,19 +100,20 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // 🔐 Ensure user is logged in
+    // 🔐 BLOCK PAGE if user is NOT logged in
     onAuthStateChanged(auth, user => {
       if (!user) {
         window.location.href = "login.html";
       }
     });
 
-    // 🔓 Logout
+    // 🔓 LOGOUT BUTTON
     document.getElementById("logoutBtn").addEventListener("click", () => {
       signOut(auth).then(() => {
         window.location.href = "login.html";
       });
     });
+
   </script>
 
 </body>
