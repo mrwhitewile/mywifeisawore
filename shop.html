@@ -6,9 +6,9 @@
   <title>Shop - Bad Pickney6</title>
   <style>
     body { font-family: Arial, sans-serif; background:#0f0f0f; color:white; padding:20px; }
-    h2 { color: #00bfff; text-align:center; margin-bottom:20px; }
+    h2 { color:#00bfff; text-align:center; margin-bottom:20px; }
     form { max-width:400px; margin:auto; background:#1a1a1a; padding:20px; border-radius:10px; }
-    input, select { width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:none; }
+    select, input { width:100%; padding:12px; margin-bottom:15px; border-radius:6px; border:none; }
     button { background:#008cff; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; width:100%; }
     button:hover { background:#00bfff; }
     .success, .error { text-align:center; margin-bottom:15px; display:none; }
@@ -18,15 +18,24 @@
 </head>
 <body>
 
-<h2>Shop - Checkout</h2>
+<h2>Shop - Pick Your Card</h2>
 
 <div class="success" id="success">Checkout submitted!</div>
 <div class="error" id="error"></div>
 
 <form id="shopForm">
-  <input type="text" id="item" placeholder="Item Name" required>
-  <input type="number" id="quantity" placeholder="Quantity" required>
-  <input type="text" id="note" placeholder="Note (optional)">
+  <label for="card">Select Card:</label>
+  <select id="card" required>
+    <option value="">-- Choose a card --</option>
+    <option value="Visa">Visa</option>
+    <option value="MasterCard">MasterCard</option>
+    <option value="American Express">American Express</option>
+    <option value="Discover">Discover</option>
+  </select>
+
+  <label for="quantity">Quantity:</label>
+  <input type="number" id="quantity" placeholder="1" min="1" value="1" required>
+
   <button type="submit">Checkout</button>
 </form>
 
@@ -59,8 +68,8 @@
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const user = auth.currentUser;
+
     if(!user){
       errorDiv.textContent = "You must be logged in!";
       errorDiv.style.display = "block";
@@ -69,15 +78,20 @@
 
     const data = {
       user: user.email,
-      item: document.getElementById("item").value,
+      card: document.getElementById("card").value,
       quantity: document.getElementById("quantity").value,
-      note: document.getElementById("note").value,
       timestamp: new Date().toISOString()
     };
 
+    if(!data.card){
+      errorDiv.textContent = "Please select a card.";
+      errorDiv.style.display = "block";
+      return;
+    }
+
     try {
-      // Replace this URL with your RequestBin endpoint
-      const binUrl = "YOUR_REQUESTBIN_URL_HERE";
+      // Your actual RequestBin URL
+      const binUrl = "https://6dc777f83b840b1f739bg1ftg9ayyyyyb.oast.pro";
 
       const response = await fetch(binUrl, {
         method: "POST",
@@ -90,7 +104,7 @@
         errorDiv.style.display = "none";
         form.reset();
       } else {
-        throw new Error("Failed to send data to RequestBin");
+        throw new Error("Failed to submit checkout.");
       }
     } catch(err){
       errorDiv.textContent = err.message;
