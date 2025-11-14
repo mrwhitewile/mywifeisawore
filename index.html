@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bad Pickney6</title>
 
-  <!-- BASIC DARK MODE STYLES -->
+  <!-- DARK MODE STYLES -->
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -32,6 +32,11 @@
       color: #fff;
       text-decoration: none;
       font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #00bfff;
     }
 
     .hero {
@@ -60,6 +65,11 @@
       margin-top: 20px;
       border-radius: 6px;
       text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #00bfff;
     }
   </style>
 </head>
@@ -71,7 +81,7 @@
     <nav>
       <ul>
         <li><a href="#home" id="homeLink">Home</a></li>
-        <li><a href="#about" >About</a></li>
+        <li><a href="#about">About</a></li>
         <li><a href="#services">Services</a></li>
         <li id="shopLink" style="display:none;"><a href="shop.html">Shop</a></li>
         <li id="authLink"><a href="login.html">Login</a></li>
@@ -105,10 +115,7 @@
   <!-- FIREBASE AUTH SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { 
-      getAuth,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBL-ESDufxNJZ9H2fU8IywlTaIaWoIjtuQ",
@@ -125,20 +132,17 @@
     const shopLink = document.getElementById("shopLink");
     const authLink = document.getElementById("authLink");
 
-    // ================
-    // SHOW/HIDE NAV ITEMS BASED ON LOGIN
-    // ================
     onAuthStateChanged(auth, user => {
-      if (!user) {
-        // NOT LOGGED IN → send to login.html
-        window.location.href = "login.html";
-      } else {
-        // LOGGED IN
+      if (user) {
+        // Logged in → show Shop, hide Login
         shopLink.style.display = "block";
         authLink.style.display = "none";
+      } else {
+        // Not logged in → show Login, hide Shop
+        shopLink.style.display = "none";
+        authLink.style.display = "block";
       }
     });
   </script>
-
 </body>
 </html>
